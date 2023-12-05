@@ -1,5 +1,5 @@
 package monopolybank;
 
 public class Constants {
-    public final static String FILE_CODES = "config/MonopolyCode.txt";
+    public final static String CONFIG_CODE = "config/MonopolyCode.txt";
 }
