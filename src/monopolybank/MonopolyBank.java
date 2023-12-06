@@ -16,7 +16,12 @@ public class MonopolyBank {
         // Los idiomas deben estar en la carpeta "config/languages/"
         // Las partidas antiguas deberán estar en la carpeta "config/oldGames/"
         System.out.println("BIENVENIDO AL MONOPOLY");
+
+        //GAME MANAGER ASK IF NEW GAME OR LOAD GAME
+
+        //NEW GAME CASE
         Game juego = new Game();
+        //LOAD GAME CASE LEADS
     }
     
 }

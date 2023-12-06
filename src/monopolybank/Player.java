@@ -16,6 +16,7 @@ public class Player implements Serializable {
     private final String name;
     private int balance = 1500;
     private ArrayList<Property> properties;
+    private Terminal terminal;
 
     public Player (Color c, String n){
         this.color = c;

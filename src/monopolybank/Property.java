@@ -2,15 +2,21 @@ package monopolybank;
 
 public class Property extends MonopolyCode{
     private final int price;
-    private boolean mortaged = false;
+    private boolean mortaged;
     private final int mortageValue;
     private Player owner;
 
-    Property (int id, String description, int price, int mortageValue, Player owner){
-        super(id, description);
+    Property (String code){
+
+        super(0, ""); //initialize or else can't split string first
+
+        String [] parts = code.split(";");
+        super.setId(Integer.parseInt(parts[0]));
+        super.setDescription(parts[2]);
+
         this.price = price;
+        this.mortaged = false;
         this.mortageValue = mortageValue;
-        this.owner = null;
     }
 
     public Player getOwner() {
