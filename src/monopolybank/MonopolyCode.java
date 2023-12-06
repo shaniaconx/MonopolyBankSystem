@@ -6,7 +6,7 @@ public class MonopolyCode implements Serializable {
     private final int id;
     private final String description;
 
-    public MonopolyCode(int id, String description){
+    MonopolyCode(int id, String description){
         this.id = id;
         this.description = description;
     }

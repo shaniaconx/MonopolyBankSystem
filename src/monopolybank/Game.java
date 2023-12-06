@@ -31,7 +31,7 @@ public class Game implements Serializable {
                     newCode = new Street(actualLine);
                     break;
                 case "PAYMENT_CHARGE_CARD":
-                    newCode = new PaymentChargeCard(actualLine);
+                    newCode = new PaymentCharge(actualLine);
                     break;
                 case "TRANSPORT":
                     newCode = new Transport(actualLine);
