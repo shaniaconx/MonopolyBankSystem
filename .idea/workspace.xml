@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0319432a-da55-420f-85dc-b14bbb4fcd8d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/monopolybank/Terminal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Terminal.java" afterDir="false" />
-    </list>
+    <list default="true" id="0319432a-da55-420f-85dc-b14bbb4fcd8d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -68,7 +65,7 @@
       <workItem from="1701788945807" duration="3167000" />
       <workItem from="1701858586350" duration="3980000" />
       <workItem from="1701882810759" duration="8537000" />
-      <workItem from="1702303724144" duration="202000" />
+      <workItem from="1702303724144" duration="292000" />
     </task>
     <servers />
   </component>
