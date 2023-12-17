@@ -7,12 +7,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Translator {
+    private String language;
     private Map<String, String> dictionary;
 
     Translator(String dictionaryFileName){
         dictionary = new HashMap<>();
+        setLanguage(dictionaryFileName.replaceFirst("[.]", ""));
         loadDictionary(dictionaryFileName);
 
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getLanguage(){
+        return this.language;
     }
 
     private void loadDictionary(String dictionaryRoute){

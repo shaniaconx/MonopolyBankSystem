@@ -1,12 +1,10 @@
 package monopolybank;
 
-public class Terminal {
-    Terminal(){};
+import java.io.IOException;
 
-    public void read(){};
-    public void  show(String msg){};
-    public TranslatorManager getTranslatorManager(){
-        TranslatorManager t = new TranslatorManager();
-        return t;
-    }
+abstract class Terminal {
+
+    public abstract int read();
+    public abstract void show(String s);
+
 }

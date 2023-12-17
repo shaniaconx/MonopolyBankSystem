@@ -27,6 +27,7 @@ public class Game implements Serializable {
                 String type = getCodeClass(actualLine);
 
                 MonopolyCode newCode = null;
+
                 switch (type) {
                     case "STREET":
                         newCode = new Street(actualLine);
@@ -46,11 +47,12 @@ public class Game implements Serializable {
                     default:
                         System.out.println("ERROR, tipo de código no encontrado.");
                 }
-                this.codes.put(newCode);
+                int key = newCode.getId();
+                this.codes.put(key, newCode);
             }
             myReader.close();
         } catch (FileNotFoundException e){
-            System.out.println("An error ocurred. Couldn't read file");
+            System.out.println("An error occurred. Couldn't read file");
             e.printStackTrace();
         }
     }

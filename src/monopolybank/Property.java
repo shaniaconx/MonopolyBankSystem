@@ -6,15 +6,11 @@ public class Property extends MonopolyCode{
     private final int mortageValue;
     private Player owner;
 
-    Property (String code){
+    Property (int price, boolean mortaged, int mortageValue){
+        super(id);
+        super(description);
 
-        super(0, ""); //initialize or else can't split string first
-
-        String [] parts = code.split(";");
-        super.setId(Integer.parseInt(parts[0]));
-        super.setDescription(parts[2]);
-
-        this.price = price;
+        this.price = mortageValue*2;
         this.mortaged = false;
         this.mortageValue = mortageValue;
     }

@@ -5,10 +5,22 @@ import java.util.ArrayList;
 import java.util.Map;
 
 enum Color {
-    red,
-    green,
-    blue,
-    black
+    red(1), green(2), blue(3), black(4);
+    private final int value;
+    Color(int value){
+        this.value = value;
+    }
+    public int getValue(){
+        return value;
+    }
+    public static Color association(int value){
+        for (Color c: values()){
+            if (c.getValue() == value){
+                return c;
+            }
+        }
+        return black;
+    }
 }
 
 public class Player implements Serializable {
@@ -18,9 +30,8 @@ public class Player implements Serializable {
     private ArrayList<Property> properties;
     private Terminal terminal;
 
-    public Player (Color c, String n){
-        this.color = c;
-        this.name = n;
+    Player (Color c, String n){
+        //todo
     }
 
     @Override
