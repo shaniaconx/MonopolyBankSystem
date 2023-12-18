@@ -7,8 +7,8 @@ public class PaymentCharge extends MonopolyCode{
 
     private int amount;
 
-    PaymentCharge(String code){
-        super(parseId(code), parseDescription(code));
+    PaymentCharge(String code, Terminal terminal){
+        super(parseId(code), parseDescription(code), terminal);
 
         Matcher moneyFounder = PATTERN.matcher(code); //finds the cuantity used in the description
         if (moneyFounder.find()) {

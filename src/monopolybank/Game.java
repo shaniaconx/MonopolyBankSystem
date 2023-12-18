@@ -12,7 +12,8 @@ public class Game implements Serializable {
     private Map<Color, Player> players = null;
     private Terminal terminal;
 
-    Game (){
+    Game (Terminal terminal){
+        this.terminal = terminal;
         this.createPlayers();
         this.loadMonopolyCodes(CONFIG_CODE);
     }
@@ -30,19 +31,19 @@ public class Game implements Serializable {
 
                 switch (type) {
                     case "STREET":
-                        newCode = new Street(actualLine);
+                        newCode = new Street(actualLine, terminal);
                         break;
                     case "PAYMENT_CHARGE_CARD":
-                        newCode = new PaymentCharge(actualLine);
+                        newCode = new PaymentCharge(actualLine, terminal);
                         break;
                     case "TRANSPORT":
-                        newCode = new Transport(actualLine);
+                        newCode = new Transport(actualLine, terminal);
                         break;
                     case "SERVICE":
-                        newCode = new Service(actualLine);
+                        newCode = new Service(actualLine, terminal);
                         break;
                     case "REPAIRS_CARD":
-                        newCode = new RepairsCard(actualLine);
+                        newCode = new RepairsCard(actualLine, terminal);
                         break;
                     default:
                         System.out.println("ERROR, tipo de código no encontrado.");
@@ -61,5 +62,11 @@ public class Game implements Serializable {
         return parts[1];
     }
 
-    private void createPlayers(){}
+    public void play(){
+        //todo
+    }
+
+    private void createPlayers(){
+        //todo
+    }
 }

@@ -2,7 +2,6 @@ package monopolybank;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Map;
 
 enum Color {
     red(1), green(2), blue(3), black(4);
@@ -24,36 +23,86 @@ enum Color {
 }
 
 public class Player implements Serializable {
+    private final int id;
     private final Color color;
     private final String name;
     private int balance = 1500;
-    private ArrayList<Property> properties;
-    private Terminal terminal;
+    private ArrayList<Property> properties = null;
+    private boolean bankrupt = false;
+    private TextTerminal terminal;
 
-    Player (Color c, String n){
-        //todo
+    Player (int id, String name){
+        //terminal.show("Elige un color\n   1. Rojo\n   2. Verde\n   3. Azul\n   4. Negro\n");
+        //id = terminal.read();
+        this.id = id;
+        this.name = name;
+        color = Color.association(id);
+
     }
 
     @Override
     public String toString() {
-        return "Player{" +
-                "color=" + color +
-                ", name='" + name + '\'' +
-                ", balance=" + balance +
-                '}';
+        return "Jugador " + color + ": " + name + '\'' +
+                "Dinero =" + balance;
     }
 
     public int getBalance() {
         return balance;
     }
 
-    public void pay (int amount, boolean mandatory){
-
+    public boolean pay (int amount, boolean mandatory){
+        if (hasEnoughMoney(amount)){
+            balance -= amount;
+            return true;
+        } else{
+            if (mandatory) {
+                this.setBankrupt(true);
+                while (!hasEnoughMoney(amount) && thereAreThingsToSell()){
+                    sellActives(this, true);
+                    if(hasEnoughMoney(amount)){
+                        this.setBankrupt(false);
+                        return true;
+                    }
+                }
+            } else {
+                terminal.show("No tienes dinero suficiente.");
+            }
+            return false;
+        }
+    }
+    private boolean hasEnoughMoney(int amount) {
+        return balance - amount > 0;
     }
 
-    public void setBankrupt(){}
+    public void setBankrupt(boolean state){
+        this.bankrupt = state;
+    }
+//todo has houses es para street solo -> hacer ifs
+    private void sellActives(Player actual, boolean mandatory){
+        if (mandatory){
+            if (this.getProperties() != null && thereAreThingsToSell()){
+                for (Property p: properties){
+                    if(p.hasHouses()){
+                        //todo when Street class is done
+                        //todo sellHouse()
+                    }
+                    if(!p.getMortgaged()){
+                        p.setMortgaged(true);
+                        actual.balance += p.getMortgageValue();
+                    }
+                }
+            }
+        }
+    }
 
-    private void sellActives(Player target, boolean mandatory){}
+    private boolean thereAreThingsToSell(){
+        for (Property p: this.properties){
+            if (!p.getMortgaged() || p.hasHouses()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public ArrayList<Property> getProperties() {
         return properties;
@@ -64,6 +113,7 @@ public class Player implements Serializable {
         p.setOwner(this);
     }
 
+    //cuando pay == false y bankrupt -> traspasamos
     public void traspaseProperties(Player newOwner){
         for (Property p: this.properties) {
             p.setOwner(newOwner);

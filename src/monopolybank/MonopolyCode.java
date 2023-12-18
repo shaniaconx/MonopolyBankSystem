@@ -5,11 +5,12 @@ import java.io.Serializable;
 public class MonopolyCode implements Serializable {
     protected int id;
     protected String description;
-    private TextTerminal terminal;
+    private Terminal terminal;
 
-    MonopolyCode(int id, String description){
+    MonopolyCode(int id, String description, Terminal terminal){
         this.id = id;
         this.description = description;
+        this.terminal = terminal;
     }
 
     @Override

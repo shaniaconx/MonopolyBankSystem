@@ -2,7 +2,7 @@ package monopolybank;
 
 /**
  *
- * @author 
+ * @author Shania Manso García
  */
 public class MonopolyBank {
 
@@ -16,12 +16,9 @@ public class MonopolyBank {
         // Los idiomas deben estar en la carpeta "config/languages/"
         // Las partidas antiguas deberán estar en la carpeta "config/oldGames/"
 
+        GameManager manager = new GameManager();
+        manager.start();
 
-        //GAME MANAGER ASK IF NEW GAME OR LOAD GAME
-
-        //NEW GAME CASE
-        Game juego = new Game();
-        //LOAD GAME CASE LEADS
     }
     
 }

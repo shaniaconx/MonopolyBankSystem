@@ -1,11 +1,9 @@
 package monopolybank;
 import java.util.*;
-import java.io.IOException;
 
 public class TextTerminal extends Terminal{
-    private TranslatorManager translatorManager;
     TextTerminal (){
-        this.translatorManager = new TranslatorManager();
+        super();
     }
     @Override
     public int read() {
@@ -19,10 +17,6 @@ public class TextTerminal extends Terminal{
         Translator t = tm.getCurrentIdiom();
         String toShow = t.translate(text);
         System.out.println(toShow);
-    }
-
-    public TranslatorManager getTranslatorManager() {
-        return translatorManager;
     }
 }
 
