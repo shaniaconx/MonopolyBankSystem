@@ -20,30 +20,43 @@ enum Color {
         }
         return black;
     }
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case red: return "Rojo";
+            case green: return "Verde";
+            case blue: return "Azul";
+            default: return "Negro";
+        }
+
+    }
 }
 
 public class Player implements Serializable {
     private final int id;
     private final Color color;
-    private final String name;
     private int balance = 1500;
     private ArrayList<Property> properties = null;
     private boolean bankrupt = false;
-    private TextTerminal terminal;
+    private Terminal terminal;
 
-    Player (int id, String name){
-        //terminal.show("Elige un color\n   1. Rojo\n   2. Verde\n   3. Azul\n   4. Negro\n");
-        //id = terminal.read();
+    Player (int id, Terminal terminal){
         this.id = id;
-        this.name = name;
         color = Color.association(id);
+        this.balance = 1500;
+        this.properties = null;
+        this.bankrupt = false;
+        this.terminal = terminal;
+    }
 
+    public Color getColor() {
+        return color;
     }
 
     @Override
-    public String toString() {
-        return "Jugador " + color + ": " + name + '\'' +
-                "Dinero =" + balance;
+    public String toString() { //todo translator??
+        return "Jugador " + color.toString() + ": " + "Dinero =" + balance;
     }
 
     public int getBalance() {

@@ -53,7 +53,7 @@ public class Game implements Serializable {
             }
             myReader.close();
         } catch (FileNotFoundException e){
-            System.out.println("An error occurred. Couldn't read file");
+            System.out.println("An error occurred. Couldn't read file.");
             e.printStackTrace();
         }
     }
@@ -63,17 +63,42 @@ public class Game implements Serializable {
     }
 
     public void play(){
-        //todo while(moreThanOnePlayer)
-        terminal.show("Introduzca código de tarjeta:");
-        int cardCode = terminal.read();
-        terminal.show("Introduzca código de jugador:\n(rojo = 1, verde = 2, azul = 3, negro = 4)");
-        int playerCode = terminal.read();
-        Player actualPlayer = players.get(playerCode);//todo falta definicion del mapa
-        MonopolyCode actualCard = codes.get(cardCode);
-        actualCard.doOperation(actualPlayer);
+        while (players.size() > 1) {
+            terminal.show("Introduzca código de tarjeta:");
+            int cardCode = terminal.read();
+            terminal.show("Introduzca código de jugador:\n(rojo = 1, verde = 2, azul = 3, negro = 4)");
+            int playerCode = terminal.read();
+            Player actualPlayer = players.get(playerCode);
+            MonopolyCode actualCard = codes.get(cardCode);
+            actualCard.doOperation(actualPlayer);
+        }
+        Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
+        Player winner = winnerEntry.getValue();
+        String winnerColor = winner.getColor().toString();
+        terminal.show("¡El ganador es el jugador " + winnerColor + "!");
+        //todo end game
     }
 
     private void createPlayers(){
-        //todo
+        int numPlayers;
+        do {
+            terminal.show("Indica el número de jugadores que participarán en la partida:");
+            numPlayers = terminal.read();
+            if (numPlayers == 1 || numPlayers > 4){
+                terminal.show("Elige un número de jugadores entre 2 y 4.");
+            }
+        } while (numPlayers == 1 || numPlayers > 4);
+
+        for (int i = 0; i < numPlayers; i++){
+            int playerId;
+            do{
+                terminal.show("¿Qué color quieres?\n1. Rojo\n2. Verde\n3. Azul\n4. Negro");
+                playerId = terminal.read();
+                if (players.containsKey(playerId)){
+                    terminal.show("Elija un color libre.");
+                }
+            }while (players.containsKey(playerId));
+            players.put(playerId, new Player(playerId, this.terminal));
+        }
     }
 }
