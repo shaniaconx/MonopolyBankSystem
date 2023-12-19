@@ -9,7 +9,7 @@ import static monopolybank.Constants.*;
 public class Game implements Serializable {
     //List <MonopolyCode> codes = null;
     private Map<Integer, MonopolyCode> codes = null;
-    private Map<Color, Player> players = null;
+    private Map<Integer, Player> players = null;
     private Terminal terminal;
 
     Game (Terminal terminal){
@@ -63,7 +63,14 @@ public class Game implements Serializable {
     }
 
     public void play(){
-        //todo
+        //todo while(moreThanOnePlayer)
+        terminal.show("Introduzca código de tarjeta:");
+        int cardCode = terminal.read();
+        terminal.show("Introduzca código de jugador:\n(rojo = 1, verde = 2, azul = 3, negro = 4)");
+        int playerCode = terminal.read();
+        Player actualPlayer = players.get(playerCode);//todo falta definicion del mapa
+        MonopolyCode actualCard = codes.get(cardCode);
+        actualCard.doOperation(actualPlayer);
     }
 
     private void createPlayers(){
