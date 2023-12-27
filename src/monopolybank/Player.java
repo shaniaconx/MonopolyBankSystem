@@ -90,7 +90,7 @@ public class Player implements Serializable {
     public void setBankrupt(boolean state){
         this.bankrupt = state;
     }
-//todo has houses es para street solo -> hacer ifs
+    //todo has houses es para street solo -> hacer ifs
     private void sellActives(Player actual, boolean mandatory){
         if (mandatory){
             if (this.getProperties() != null && thereAreThingsToSell()){
@@ -131,5 +131,21 @@ public class Player implements Serializable {
         for (Property p: this.properties) {
             p.setOwner(newOwner);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // If the object is compared with itself then return true
+        if (o == this) {
+            return true;
+        }
+        // Check if o is an instance of Player
+        if (!(o instanceof Player)) {
+            return false;
+        }
+        // typecast o to Player so that we can compare
+        Player c = (Player) o;
+
+        return getColor().equals(c.getColor());
     }
 }

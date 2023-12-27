@@ -2,10 +2,10 @@ package monopolybank;
 
 import java.io.Serializable;
 
-public class MonopolyCode implements Serializable {
+abstract class MonopolyCode implements Serializable {
     protected int id;
     protected String description;
-    private Terminal terminal;
+    protected Terminal terminal;
 
     MonopolyCode(int id, String description, Terminal terminal){
         this.id = id;
@@ -26,7 +26,5 @@ public class MonopolyCode implements Serializable {
         return description;
     }
 
-    public void doOperation(Player p){
-        //todo personalized code in each child class
-    }
+    public abstract void doOperation(Player p);
 }

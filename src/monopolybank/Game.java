@@ -48,6 +48,7 @@ public class Game implements Serializable {
                     default:
                         System.out.println("ERROR, tipo de código no encontrado.");
                 }
+
                 int key = newCode.getId();
                 this.codes.put(key, newCode);
             }
