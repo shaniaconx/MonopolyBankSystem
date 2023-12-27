@@ -7,7 +7,11 @@
     <list default="true" id="0319432a-da55-420f-85dc-b14bbb4fcd8d" name="Changes" comment="si">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/monopolybank/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/MonopolyCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/MonopolyCode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/monopolybank/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/Property.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Property.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/Transport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Transport.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,6 +85,11 @@
       <workItem from="1702977423215" duration="2462000" />
       <workItem from="1703008939679" duration="9000" />
       <workItem from="1703013369087" duration="5311000" />
+      <workItem from="1703064154186" duration="238000" />
+      <workItem from="1703078083302" duration="448000" />
+      <workItem from="1703184504349" duration="595000" />
+      <workItem from="1703672249562" duration="2615000" />
+      <workItem from="1703692874455" duration="8303000" />
     </task>
     <task id="LOCAL-00001" summary="si">
       <option name="closed" value="true" />
