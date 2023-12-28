@@ -1,26 +1,35 @@
 package monopolybank;
 
+import java.util.ArrayList;
+
 public class Transport extends Property{
-    private final int[] costStaying = {25, 50, 75, 100};
+    private final ArrayList<Integer> costStaying;
 
     Transport(String code, Terminal terminal){
-        super(parseId(code), parseClass(code), parseDescription(code), terminal, 100*2, false, 100);
-    }
-    private static int parseId(String code){
-        String [] parts = code.split(";");
-        return Integer.parseInt(parts[0]);
-    }
-    private static String parseDescription(String code) {
-        String[] parts = code.split(";");
-        return parts[2];
-    }
-    private static String parseClass(String code){
-        String[] parts = code.split(";");
-        return parts[1];
+        super(parseId(code), parseClass(code), parseDescription(code), terminal, parseMortgageValue(code)*2, false, parseMortgageValue(code));
+
+        costStaying = new ArrayList<>();
+        for (int i = 3; i < 7; i++){
+            costStaying.add(parseCostStaying(i, code));
+        }
     }
 
     private void showPaymentSummary(int amount, Player p){
         terminal.show("El jugador " + p.getColor() + " usará la propiedad " + this.description + ". Por ello, pagará " + amount + "€ al jugador " + this.getOwner().getColor() +"\n 1.Aceptar\n 2.Cancelar");
+
+        int choice = terminal.read();
+        do {
+            switch (choice) {
+                case 1:
+                    p.payOtherPlayer(this.getOwner(), amount);
+                    break;
+                case 2:
+                    //cancel
+                    break;
+                default:
+                    terminal.show("Por favor, seleccione una de las opciones propuestas.");
+            }
+        }while (choice != 1 || choice != 2);
     }
 
     private void showPurchaseSummary(int amount, Player p){
@@ -29,7 +38,7 @@ public class Transport extends Property{
         do {
             switch (choice) {
                 case 1:
-                    //accept
+                    p.pay(amount, false);
                     break;
                 case 2:
                     //cancel
@@ -50,16 +59,7 @@ public class Transport extends Property{
                 rent++;
             }
         }
-        return costStaying[rent];
-    }
-
-    @Override
-    public void doOwnerOperations() {
-        terminal.show("¿Quieres hipotecar la propiedad?\n 1.Si\n 2.No");
-        int choice = terminal.read();
-        if(choice == 1){
-            setMortgaged(true);
-        }
+        return costStaying.get(rent);
     }
 
     @Override
@@ -73,5 +73,10 @@ public class Transport extends Property{
             int rentToPay = this.getPaymentForRent();
             p.pay(rentToPay, true);
         }
+    }
+
+    @Override
+    public void acceptCancel(int choice){
+
     }
 }

@@ -1,23 +1,17 @@
 package monopolybank;
 
+import java.util.ArrayList;
+
 public class Service extends Property{
-    private final int[] costStaying = {4, 10};
+    private final ArrayList<Integer> costStaying;
 
     Service(String code, Terminal terminal){
-        super(parseId(code), parseClass(code), parseDescription(code), terminal, 75*2, false, 75);
-    }
-    private static int parseId(String code){
-        String [] parts = code.split(";");
-        return Integer.parseInt(parts[0]);
-    }
-    private static String parseDescription(String code) {
-        String[] parts = code.split(";");
-        return parts[2];
-    }
+        super(parseId(code), parseClass(code), parseDescription(code), terminal, parseMortgageValue(code)*2, false, parseMortgageValue(code));
 
-    private static String parseClass(String code){
-        String[] parts = code.split(";");
-        return parts[1];
+        costStaying = new ArrayList<>();
+        for (int i = 3; i < 5; i++){
+            costStaying.add(parseCostStaying(i, code));
+        }
     }
 
     @Override
@@ -32,12 +26,7 @@ public class Service extends Property{
                 rent++;
             }
         }
-        return num*costStaying[rent];
-    }
-
-    @Override
-    public void doOwnerOperations() {
-
+        return num*costStaying.get(rent);
     }
 
     @Override

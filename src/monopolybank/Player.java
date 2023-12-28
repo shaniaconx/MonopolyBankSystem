@@ -63,6 +63,10 @@ public class Player implements Serializable {
         return balance;
     }
 
+    public void getPaid (int balance) {
+        this.balance += balance;
+    }
+
     public boolean pay (int amount, boolean mandatory){
         if (hasEnoughMoney(amount)){
             balance -= amount;
@@ -83,6 +87,7 @@ public class Player implements Serializable {
             return false;
         }
     }
+
     private boolean hasEnoughMoney(int amount) {
         return balance - amount > 0;
     }
@@ -91,7 +96,7 @@ public class Player implements Serializable {
         this.bankrupt = state;
     }
     //todo has houses es para street solo -> hacer ifs
-    private void sellActives(Player actual, boolean mandatory){
+    /*private void sellActives(Player actual, boolean mandatory){
         if (mandatory){
             if (this.getProperties() != null && thereAreThingsToSell()){
                 for (Property p: properties){
@@ -106,7 +111,7 @@ public class Player implements Serializable {
                 }
             }
         }
-    }
+    }*/
 
     private boolean thereAreThingsToSell(){
         for (Property p: this.properties){
