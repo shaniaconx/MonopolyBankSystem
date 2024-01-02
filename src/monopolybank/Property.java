@@ -44,13 +44,40 @@ abstract class Property extends MonopolyCode{
         return price;
     }
 
-    private int showMortgageSummary(){
+    private void showMortgageSummary(){
+        int choice;
         if(mortgaged){
-            terminal.show("Se va a deshipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
-            return terminal.read();
+            do {
+                terminal.show("Se va a deshipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
+                choice = terminal.read();
+                switch (choice){
+                    case 1:
+                        this.owner.getPaid(this.mortgageValue);
+                        break;
+                    case 2:
+                        terminal.show("Operación cancelada.");
+                        break;
+                    default:
+                        terminal.show("Por favor, seleccione una de las opciones propuestas.");
+                        break;
+                }
+            }while(choice != 1 || choice !=2);
         } else {
-            terminal.show("Se va a hipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
-            return terminal.read();
+            do {
+                terminal.show("Se va a hipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
+                choice = terminal.read();
+                switch (choice){
+                    case 1:
+                        this.owner.pay(this.mortgageValue, false);
+                        break;
+                    case 2:
+                        terminal.show("Operación cancelada.");
+                        break;
+                    default:
+                        terminal.show("Por favor, seleccione una de las opciones propuestas.");
+                        break;
+                }
+            }while(choice != 1 || choice!= 2);
         }
 
     }
@@ -59,17 +86,12 @@ abstract class Property extends MonopolyCode{
 
     public void doOwnerOperations(){
         terminal.show("Menú de operaciones del propietario.\n¿Qué desea hacer?\n 1. Gestionar Hipoteca\n 2. Cancelar");
-
         int choice = terminal.read();
+
         if (choice == 1) {
-            int message = showMortgageSummary();
-            if (message == 1 && mortgaged) {
-                this.owner.getPaid(mortgageValue);
-            } else if (message == 1 && !mortgaged) {
-                this.owner.pay(mortgageValue, false);
-            } else {
-                //cancel
-            }
+            this.showMortgageSummary();
+        }else{
+            terminal.show("Operación cancelada.");
         }
     }
 

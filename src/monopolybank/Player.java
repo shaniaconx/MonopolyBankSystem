@@ -38,7 +38,7 @@ public class Player implements Serializable {
     private final Color color;
     private int balance = 1500;
     private ArrayList<Property> properties = null;
-    private boolean bankrupt = false;
+    private boolean bankrupt;
     private Terminal terminal;
 
     Player (int id, Terminal terminal){
@@ -71,21 +71,24 @@ public class Player implements Serializable {
         if (hasEnoughMoney(amount)){
             balance -= amount;
             return true;
-        } else{
-            if (mandatory) {
-                this.setBankrupt(true);
-                while (!hasEnoughMoney(amount) && thereAreThingsToSell()){
-                    sellActives(this, true);
-                    if(hasEnoughMoney(amount)){
-                        this.setBankrupt(false);
-                        return true;
-                    }
-                }
-            } else {
-                terminal.show("No tienes dinero suficiente.");
-            }
-            return false;
         }
+        if (!hasEnoughMoney(amount) && mandatory) {
+            this.setBankrupt(true);
+            while (!hasEnoughMoney(amount) && thereAreThingsToSell()){
+                sellActives(this, true);
+            }
+
+            if (hasEnoughMoney(amount)){
+                setBankrupt(false);
+                balance -= amount;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        //!hasEnoughMoney(amount) && !mandatory
+        terminal.show("No tienes dinero suficiente.");
+        return false;
     }
 
     private boolean hasEnoughMoney(int amount) {
@@ -96,7 +99,7 @@ public class Player implements Serializable {
         this.bankrupt = state;
     }
     //todo has houses es para street solo -> hacer ifs
-    /*private void sellActives(Player actual, boolean mandatory){
+    private void sellActives(Player actual, boolean mandatory){
         if (mandatory){
             if (this.getProperties() != null && thereAreThingsToSell()){
                 for (Property p: properties){
@@ -111,7 +114,7 @@ public class Player implements Serializable {
                 }
             }
         }
-    }*/
+    }
 
     private boolean thereAreThingsToSell(){
         for (Property p: this.properties){
