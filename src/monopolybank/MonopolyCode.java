@@ -5,7 +5,7 @@ import java.io.Serializable;
 abstract class MonopolyCode implements Serializable {
     protected int id;
     protected String description;
-    protected Terminal terminal;
+    protected static Terminal terminal;
 
     MonopolyCode(int id, String description, Terminal terminal){
         this.id = id;
@@ -26,5 +26,5 @@ abstract class MonopolyCode implements Serializable {
         return description;
     }
 
-    public abstract void doOperation(Player p);
+    public abstract boolean doOperation(Player p);
 }

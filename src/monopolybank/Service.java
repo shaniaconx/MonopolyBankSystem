@@ -17,8 +17,8 @@ public class Service extends Property{
     @Override
     public int getPaymentForRent(){
         int rent = 0;
-        super.terminal.show("¿Qué número has sacado en los dados?");
-        int num = super.terminal.read();
+        terminal.show("¿Qué número has sacado en los dados?");
+        int num = terminal.read();
         Player actualOwner = this.getOwner();
         for (Property p: actualOwner.getProperties()) {
             String actualClass = p.getPropertyClass();
@@ -29,8 +29,4 @@ public class Service extends Property{
         return num*costStaying.get(rent);
     }
 
-    @Override
-    public void doOperation(Player p) {
-
-    }
 }

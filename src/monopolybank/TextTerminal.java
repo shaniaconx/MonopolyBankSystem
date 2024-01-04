@@ -1,9 +1,12 @@
 package monopolybank;
+import java.text.MessageFormat;
 import java.util.*;
 
 public class TextTerminal extends Terminal{
-    TextTerminal (){
+    private ResourceBundle messages;
+    TextTerminal (Locale locale){
         super();
+        this.messages = ResourceBundle.getBundle("messages", locale);
     }
     @Override
     public int read() {
@@ -12,11 +15,10 @@ public class TextTerminal extends Terminal{
     }
 
     @Override
-    public void show(String text) {
-        TranslatorManager tm = getTranslatorManager();
-        Translator t = tm.getCurrentIdiom();
-        String toShow = t.translate(text);
-        System.out.println(toShow);
+    public void show(String key, Object... args) {
+        String template = messages.getString(key);
+        String message = (args.length > 0) ? MessageFormat.format(template, args) : template;
+        System.out.println(message);
     }
 }
 

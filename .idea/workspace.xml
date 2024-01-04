@@ -6,8 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="0319432a-da55-420f-85dc-b14bbb4fcd8d" name="Changes" comment="si">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/languages/English" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/MonopolyCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/MonopolyCode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/monopolybank/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/monopolybank/Property.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Property.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/Terminal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Terminal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/monopolybank/TextTerminal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/TextTerminal.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/monopolybank/Transport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Transport.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -90,6 +96,7 @@
       <workItem from="1703772172245" duration="9004000" />
       <workItem from="1703841969002" duration="4397000" />
       <workItem from="1703866388494" duration="2751000" />
+      <workItem from="1704367572922" duration="13500000" />
     </task>
     <task id="LOCAL-00001" summary="si">
       <option name="closed" value="true" />

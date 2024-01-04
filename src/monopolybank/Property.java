@@ -1,5 +1,7 @@
 package monopolybank;
 
+import java.util.function.Supplier;
+
 abstract class Property extends MonopolyCode{
     private String className;
     private int price;
@@ -44,45 +46,30 @@ abstract class Property extends MonopolyCode{
         return price;
     }
 
-    private void showMortgageSummary(){
-        int choice;
-        if(mortgaged){
-            do {
-                terminal.show("Se va a deshipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
-                choice = terminal.read();
-                switch (choice){
-                    case 1:
-                        this.owner.getPaid(this.mortgageValue);
-                        break;
-                    case 2:
-                        terminal.show("Operación cancelada.");
-                        break;
-                    default:
-                        terminal.show("Por favor, seleccione una de las opciones propuestas.");
-                        break;
-                }
-            }while(choice != 1 || choice !=2);
-        } else {
-            do {
-                terminal.show("Se va a hipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
-                choice = terminal.read();
-                switch (choice){
-                    case 1:
-                        this.owner.pay(this.mortgageValue, false);
-                        break;
-                    case 2:
-                        terminal.show("Operación cancelada.");
-                        break;
-                    default:
-                        terminal.show("Por favor, seleccione una de las opciones propuestas.");
-                        break;
-                }
-            }while(choice != 1 || choice!= 2);
-        }
-
-    }
-
     public abstract int getPaymentForRent();
+
+    @Override
+    public boolean doOperation(Player p) {
+        Player actualOwner = this.getOwner();
+        if (actualOwner == null){
+            this.showPurchaseSummary(this.getPrice(), p);
+            acceptCancel(() -> p.pay(this.getPrice(), false), false);
+            return true;
+        } else if (actualOwner.equals(p)) {
+            this.doOwnerOperations();
+            return  true;
+        } else { //!actualOwner.equals(p)
+            int rentToPay = this.getPaymentForRent();
+            boolean result = acceptCancel(() -> p.pay(rentToPay, true), true);
+            if(result){
+                actualOwner.getPaid(rentToPay);
+                return true;
+            }else{
+                p.traspaseProperties(actualOwner);
+                return false;
+            }
+        }
+    }
 
     public void doOwnerOperations(){
         terminal.show("Menú de operaciones del propietario.\n¿Qué desea hacer?\n 1. Gestionar Hipoteca\n 2. Cancelar");
@@ -90,9 +77,57 @@ abstract class Property extends MonopolyCode{
 
         if (choice == 1) {
             this.showMortgageSummary();
+            acceptCancel(this::mortgagingOperations, false);
         }else{
             terminal.show("Operación cancelada.");
         }
+    }
+
+    private boolean mortgagingOperations (){
+        if(this.mortgaged){
+            this.owner.pay(this.mortgageValue, false);
+        } else {
+            this.owner.getPaid(this.mortgageValue);
+        }
+        return mortgaged;
+    }
+
+    private void showMortgageSummary(){
+        if(mortgaged){
+            terminal.show("Se va a deshipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
+        } else {
+            terminal.show("Se va a hipotecar la propiedad " + this.description + " por parte del jugador " + this.owner.getColor() + " por un importe de " + this.mortgageValue + "€.\n 1.Aceptar\n 2.Cancelar");
+        }
+    }
+
+    public void showPaymentSummary(int amount, Player p){
+        terminal.show("El jugador " + p.getColor() + " usará la propiedad " + this.description + ". Por ello, pagará " + amount + "€ al jugador " + this.getOwner().getColor() +"\n 1.Aceptar\n 2.Cancelar");
+    }
+
+    public void showPurchaseSummary(int amount, Player p){
+        terminal.show("Se va a realizar la compra de la propiedad " + this.description + " por parte del jugador " + p.getColor() + " por un importe de " + amount + "€.\n 1.Aceptar\n 2.Cancelar");
+    }
+
+    public static boolean acceptCancel(Supplier<Boolean> operation, boolean mandatory){
+        if (mandatory){
+            terminal.show("Esta operación es obligatoria.");
+            return operation.get();
+        } else {
+            int choice;
+            do {
+                choice = terminal.read();
+                switch (choice) {
+                    case 1:
+                        return operation.get();
+                    case 2:
+                        terminal.show("Operación cancelada.");
+                        return false;
+                    default:
+                        terminal.show("Por favor, seleccione una de las opciones propuestas.");
+                }
+            }while(choice != 1 || choice != 2);
+        }
+        return false;
     }
 
     protected int parseCostStaying(int part, String code){

@@ -75,7 +75,7 @@ public class Player implements Serializable {
         if (!hasEnoughMoney(amount) && mandatory) {
             this.setBankrupt(true);
             while (!hasEnoughMoney(amount) && thereAreThingsToSell()){
-                sellActives(this, true);
+                sellActives(this);
             }
 
             if (hasEnoughMoney(amount)){
@@ -98,11 +98,14 @@ public class Player implements Serializable {
     public void setBankrupt(boolean state){
         this.bankrupt = state;
     }
+
     //todo has houses es para street solo -> hacer ifs
-    private void sellActives(Player actual, boolean mandatory){
-        if (mandatory){
-            if (this.getProperties() != null && thereAreThingsToSell()){
-                for (Property p: properties){
+    private void sellActives(Player actual){
+        if (this.getProperties() != null && thereAreThingsToSell()){
+            terminal.show("Escribe el identificador (número de dos cifras) de tu propiedad:");
+            int propertyId= terminal.read();
+            for (Property p: properties){
+                if (propertyId == p.getId()){
                     if(p.hasHouses()){
                         //todo when Street class is done
                         //todo sellHouse()
@@ -134,7 +137,6 @@ public class Player implements Serializable {
         p.setOwner(this);
     }
 
-    //cuando pay == false y bankrupt -> traspasamos
     public void traspaseProperties(Player newOwner){
         for (Property p: this.properties) {
             p.setOwner(newOwner);

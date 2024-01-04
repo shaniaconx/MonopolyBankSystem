@@ -67,11 +67,17 @@ public class Game implements Serializable {
         while (players.size() > 1) {
             terminal.show("Introduzca código de tarjeta:");
             int cardCode = terminal.read();
+
             terminal.show("Introduzca código de jugador:\n(rojo = 1, verde = 2, azul = 3, negro = 4)");
             int playerCode = terminal.read();
+
             Player actualPlayer = players.get(playerCode);
             MonopolyCode actualCard = codes.get(cardCode);
-            actualCard.doOperation(actualPlayer);
+
+            boolean result = actualCard.doOperation(actualPlayer);
+            if (!result){
+                removePlayer(playerCode);
+            }
         }
         Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
         Player winner = winnerEntry.getValue();
@@ -101,5 +107,10 @@ public class Game implements Serializable {
             }while (players.containsKey(playerId));
             players.put(playerId, new Player(playerId, this.terminal));
         }
+    }
+
+    private void removePlayer(int playerId){
+        this.players.remove(playerId);
+        terminal.show("Has sido eliminado.");
     }
 }
