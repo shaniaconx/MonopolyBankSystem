@@ -26,7 +26,8 @@ public class PaymentCharge extends MonopolyCode{
     }
 
     @Override
-    public void doOperation(Player p){
+    public boolean doOperation(Player p){
         //todo player identifier needed
+        return false;
     }
 }

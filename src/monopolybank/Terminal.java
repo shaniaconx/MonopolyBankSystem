@@ -1,15 +1,17 @@
 package monopolybank;
-
-import java.io.IOException;
+import java.util.Locale;
 
 abstract class Terminal {
-    private TranslatorManager tManager;
-    Terminal(){
-        TranslatorManager tManager = new TranslatorManager();
+    private TranslatorManager translatorManager;
+
+    public Terminal() {
+        this.translatorManager = new TranslatorManager();
     }
+
+    public abstract void show(String key, Object... args);
     public abstract int read();
-    public abstract void show(String s, Object... args);
+
     public TranslatorManager getTranslatorManager() {
-        return tManager;
+        return translatorManager;
     }
 }

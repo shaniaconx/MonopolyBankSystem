@@ -1,45 +1,22 @@
 package monopolybank;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public class Translator {
-    private String language;
-    private Map<String, String> dictionary;
+    private ResourceBundle resourceBundle;
 
-    Translator(String dictionaryFileName){
-        dictionary = new HashMap<>();
-        setLanguage(dictionaryFileName.replaceFirst("[.]", ""));
-        loadDictionary(dictionaryFileName);
+    Translator(Locale locale){
+        this.resourceBundle = ResourceBundle.getBundle("messages",locale);
 
     }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getLanguage(){
-        return this.language;
-    }
-
-    private void loadDictionary(String dictionaryRoute){
-        try (BufferedReader br = new BufferedReader(new FileReader(dictionaryRoute))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] parts = linea.split(",");
-                if (parts.length == 2) {
-                    dictionary.put(parts[0], parts[1]);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String translate(String key, Object... args) {
+        try {
+            String message = resourceBundle.getString(key);
+            return String.format(message, args);
+        } catch (MissingResourceException e) {
+            // Retornar la clave misma si no se encuentra la traducción
+            return key;
         }
-    }
-
-    public String translate(String original){
-        return dictionary.get(original);
     }
 }

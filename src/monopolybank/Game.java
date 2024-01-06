@@ -79,11 +79,11 @@ public class Game implements Serializable {
                 removePlayer(playerCode);
             }
         }
+        //end game
         Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
         Player winner = winnerEntry.getValue();
         String winnerColor = winner.getColor().toString();
         terminal.show("¡El ganador es el jugador " + winnerColor + "!");
-        //todo end game
     }
 
     private void createPlayers(){
@@ -99,10 +99,10 @@ public class Game implements Serializable {
         for (int i = 0; i < numPlayers; i++){
             int playerId;
             do{
-                terminal.show("¿Qué color quieres?\n1. Rojo\n2. Verde\n3. Azul\n4. Negro");
+                terminal.show("select_color");
                 playerId = terminal.read();
                 if (players.containsKey(playerId)){
-                    terminal.show("Elija un color libre.");
+                    terminal.show("color_choosen");
                 }
             }while (players.containsKey(playerId));
             players.put(playerId, new Player(playerId, this.terminal));

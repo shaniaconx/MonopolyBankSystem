@@ -1,23 +1,19 @@
 package monopolybank;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.util.Locale;
 
 public class TranslatorManager {
-    private Translator currentIdiom;
+    private Translator currentLanguage;
 
-    public Translator getCurrentIdiom() {
-        return currentIdiom;
-    }
-    public void setCurrentIdiom(Translator currentIdiom) {
-        this.currentIdiom = currentIdiom;
+    public TranslatorManager() { //idioma por defecto es Español
+        this.currentLanguage = new Translator(new Locale("es"));
     }
 
-    public void changeIdiom(String newDictionary) {
-        //newDictionary = English, Euskera, Catalan
-        if (!newDictionary.equalsIgnoreCase(getCurrentIdiom().getLanguage())){
-            Translator newTranslator = new Translator(newDictionary);
-            setCurrentIdiom(newTranslator);
-        }
+    public void changeLanguage(String language) {
+        Locale newLocale = new Locale(language);
+        this.currentLanguage = new Translator(newLocale);
+    }
+
+    public Translator getTranslator() {
+        return currentLanguage;
     }
 }

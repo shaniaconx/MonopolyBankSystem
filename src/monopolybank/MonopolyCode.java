@@ -3,19 +3,19 @@ package monopolybank;
 import java.io.Serializable;
 
 abstract class MonopolyCode implements Serializable {
-    protected int id;
-    protected String description;
-    protected static Terminal terminal;
+    private int id;
+    private String description;
+    private static Terminal terminal;
 
     MonopolyCode(int id, String description, Terminal terminal){
         this.id = id;
         this.description = description;
-        this.terminal = terminal;
+        MonopolyCode.terminal = terminal;
     }
 
     @Override
     public String toString() {
-        return id + ": " + description;
+        return terminal.getTranslatorManager().getTranslator().translate("mcode_toString", this.id, this.description);
     }
 
     public int getId() {
@@ -24,6 +24,10 @@ abstract class MonopolyCode implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public static Terminal getTerminal() {
+        return terminal;
     }
 
     public abstract boolean doOperation(Player p);

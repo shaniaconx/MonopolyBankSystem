@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Service extends Property{
     private final ArrayList<Integer> costStaying;
+    private static Terminal terminal = getTerminal();
 
     Service(String code, Terminal terminal){
         super(parseId(code), parseClass(code), parseDescription(code), terminal, parseMortgageValue(code)*2, false, parseMortgageValue(code));

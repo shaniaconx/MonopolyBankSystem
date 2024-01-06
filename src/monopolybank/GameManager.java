@@ -3,7 +3,11 @@ package monopolybank;
 import java.util.Scanner;
 
 public class GameManager {
-    private final Terminal mainTerminal = new TextTerminal();
+    private final Terminal mainTerminal;
+
+    GameManager(){
+        this.mainTerminal = new TextTerminal();
+    }
     public void start(){
         int option = 0;
         while (option != 1 || option != 2) {
@@ -11,7 +15,7 @@ public class GameManager {
             switch (option) {
                 case 1:
                     Scanner scanner = new Scanner(System.in);
-                    mainTerminal.show("Introduzca el nombre de la partida que desee cargar:");
+                    mainTerminal.show("load_game");
                     String fileName = scanner.nextLine();
                     String fullFileName = fileName + ".obj"; //".lo que sea"
                     //todo load game file
@@ -22,14 +26,14 @@ public class GameManager {
                     nuevo.play();
                     break;
                 default:
-                    mainTerminal.show("Por favor, seleccione una de las opciones propuestas.");
+                    mainTerminal.show("error_choosing");
             }
         }
 
 
     }
     private int askForResumeGame(){
-        mainTerminal.show("1. Cargar partida\n2. Nueva partida");
+        mainTerminal.show("game_options");
         return mainTerminal.read();
     }
 }

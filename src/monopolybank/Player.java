@@ -23,12 +23,12 @@ enum Color {
 
     @Override
     public String toString() {
-        switch (this) {
-            case red: return "Rojo";
-            case green: return "Verde";
-            case blue: return "Azul";
-            default: return "Negro";
-        }
+        return switch (this) {
+            case red -> "red";
+            case green -> "green";
+            case blue -> "blue";
+            default -> "black";
+        };
 
     }
 }
@@ -54,9 +54,9 @@ public class Player implements Serializable {
         return color;
     }
 
-    @Override
-    public String toString() { //todo translator??
-        return "Jugador " + color.toString() + ": " + "Dinero =" + balance;
+    public void stringPlayerInfo() {
+        String colorTranslated = terminal.getTranslatorManager().getTranslator().translate(getColor().toString());
+        terminal.show("player_info", colorTranslated, getBalance());
     }
 
     public int getBalance() {
@@ -87,7 +87,7 @@ public class Player implements Serializable {
             }
         }
         //!hasEnoughMoney(amount) && !mandatory
-        terminal.show("No tienes dinero suficiente.");
+        terminal.show("no_money");
         return false;
     }
 
@@ -102,7 +102,7 @@ public class Player implements Serializable {
     //todo has houses es para street solo -> hacer ifs
     private void sellActives(Player actual){
         if (this.getProperties() != null && thereAreThingsToSell()){
-            terminal.show("Escribe el identificador (número de dos cifras) de tu propiedad:");
+            terminal.show("sell_actives_question");
             int propertyId= terminal.read();
             for (Property p: properties){
                 if (propertyId == p.getId()){
