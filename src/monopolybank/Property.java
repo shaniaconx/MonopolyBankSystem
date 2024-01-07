@@ -61,6 +61,7 @@ abstract class Property extends MonopolyCode{
             return  true;
         } else { //!actualOwner.equals(p)
             int rentToPay = this.getPaymentForRent();
+            this.showPaymentSummary(rentToPay, p);
             boolean result = acceptCancel(() -> p.pay(rentToPay, true), true);
             if(result){
                 actualOwner.getPaid(rentToPay);
@@ -109,27 +110,7 @@ abstract class Property extends MonopolyCode{
         terminal.show("property_purchase_payment", this.getDescription(), p.getColor(), amount);
     }
 
-    public static boolean acceptCancel(Supplier<Boolean> operation, boolean mandatory){
-        if (mandatory){
-            terminal.show("mandatory");
-            return operation.get();
-        } else {
-            int choice;
-            do {
-                choice = terminal.read();
-                switch (choice) {
-                    case 1:
-                        return operation.get();
-                    case 2:
-                        terminal.show("canceled");
-                        return false;
-                    default:
-                        terminal.show("error_choosing");
-                }
-            }while(choice != 1 || choice != 2);
-        }
-        return false;
-    }
+
 
     protected int parseCostStaying(int part, String code){
         String [] parts = code.split(";");

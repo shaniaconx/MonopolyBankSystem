@@ -63,8 +63,9 @@ public class Player implements Serializable {
         return balance;
     }
 
-    public void getPaid (int balance) {
+    public boolean getPaid (int balance) {
         this.balance += balance;
+        return true;
     }
 
     public boolean pay (int amount, boolean mandatory){
@@ -130,11 +131,6 @@ public class Player implements Serializable {
 
     public ArrayList<Property> getProperties() {
         return properties;
-    }
-
-    public void setProperty(Property p) {
-        this.properties.add(p);
-        p.setOwner(this);
     }
 
     public void traspaseProperties(Player newOwner){

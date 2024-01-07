@@ -1,6 +1,7 @@
 package monopolybank;
 
 import java.io.Serializable;
+import java.util.function.Supplier;
 
 abstract class MonopolyCode implements Serializable {
     private int id;
@@ -31,4 +32,25 @@ abstract class MonopolyCode implements Serializable {
     }
 
     public abstract boolean doOperation(Player p);
+    public static boolean acceptCancel(Supplier<Boolean> operation, boolean mandatory){
+        if (mandatory){
+            terminal.show("mandatory");
+            return operation.get();
+        } else {
+            int choice;
+            do {
+                choice = terminal.read();
+                switch (choice) {
+                    case 1:
+                        return operation.get();
+                    case 2:
+                        terminal.show("cancelled");
+                        return false;
+                    default:
+                        terminal.show("error_choosing");
+                }
+            }while(choice != 1 || choice != 2);
+        }
+        return false;
+    }
 }

@@ -46,7 +46,7 @@ public class Game implements Serializable {
                         newCode = new RepairsCard(actualLine, terminal);
                         break;
                     default:
-                        System.out.println("ERROR, tipo de código no encontrado.");
+                        terminal.show("code_not_found");
                 }
 
                 int key = newCode.getId();
@@ -54,7 +54,7 @@ public class Game implements Serializable {
             }
             myReader.close();
         } catch (FileNotFoundException e){
-            System.out.println("An error occurred. Couldn't read file.");
+            terminal.show("load_files_error");
             e.printStackTrace();
         }
     }
@@ -65,10 +65,10 @@ public class Game implements Serializable {
 
     public void play(){
         while (players.size() > 1) {
-            terminal.show("Introduzca código de tarjeta:");
+            terminal.show("card_code");
             int cardCode = terminal.read();
 
-            terminal.show("Introduzca código de jugador:\n(rojo = 1, verde = 2, azul = 3, negro = 4)");
+            terminal.show("player_color");
             int playerCode = terminal.read();
 
             Player actualPlayer = players.get(playerCode);
@@ -83,16 +83,16 @@ public class Game implements Serializable {
         Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
         Player winner = winnerEntry.getValue();
         String winnerColor = winner.getColor().toString();
-        terminal.show("¡El ganador es el jugador " + winnerColor + "!");
+        terminal.show("winner", winnerColor);
     }
 
     private void createPlayers(){
         int numPlayers;
         do {
-            terminal.show("Indica el número de jugadores que participarán en la partida:");
+            terminal.show("number_of_players");
             numPlayers = terminal.read();
             if (numPlayers == 1 || numPlayers > 4){
-                terminal.show("Elige un número de jugadores entre 2 y 4.");
+                terminal.show("number_of_players_error");
             }
         } while (numPlayers == 1 || numPlayers > 4);
 
@@ -111,6 +111,8 @@ public class Game implements Serializable {
 
     private void removePlayer(int playerId){
         this.players.remove(playerId);
-        terminal.show("Has sido eliminado.");
+        Player eliminated = players.get(playerId);
+        String colorEliminated = terminal.getTranslatorManager().getTranslator().translate(eliminated.getColor().toString());
+        terminal.show("player_elimination", colorEliminated);
     }
 }

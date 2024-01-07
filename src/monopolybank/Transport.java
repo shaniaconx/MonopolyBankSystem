@@ -14,9 +14,6 @@ public class Transport extends Property{
         }
     }
 
-
-
-
     @Override
     public int getPaymentForRent(){
         int rent = 0;
