@@ -10,7 +10,7 @@ public class Game implements Serializable {
     //List <MonopolyCode> codes = null;
     private Map<Integer, MonopolyCode> codes = null;
     private Map<Integer, Player> players = null;
-    private Terminal terminal;
+    private final Terminal terminal;
 
     Game (Terminal terminal){
         this.terminal = terminal;

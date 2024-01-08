@@ -39,7 +39,7 @@ public class Player implements Serializable {
     private int balance = 1500;
     private ArrayList<Property> properties = null;
     private boolean bankrupt;
-    private Terminal terminal;
+    private final Terminal terminal;
 
     Player (int id, Terminal terminal){
         this.id = id;
@@ -100,16 +100,16 @@ public class Player implements Serializable {
         this.bankrupt = state;
     }
 
-    //todo has houses es para street solo -> hacer ifs
     private void sellActives(Player actual){
         if (this.getProperties() != null && thereAreThingsToSell()){
             terminal.show("sell_actives_question");
             int propertyId= terminal.read();
             for (Property p: properties){
                 if (propertyId == p.getId()){
-                    if(p.hasHouses()){
-                        //todo when Street class is done
-                        //todo sellHouse()
+                    if (p instanceof Street streetProperty) {
+                        if (streetProperty.hasBuildings()) {
+                            streetProperty.sellHouses(true);
+                        }
                     }
                     if(!p.getMortgaged()){
                         p.setMortgaged(true);
@@ -122,7 +122,10 @@ public class Player implements Serializable {
 
     private boolean thereAreThingsToSell(){
         for (Property p: this.properties){
-            if (!p.getMortgaged() || p.hasHouses()) {
+            if (!p.getMortgaged()) {
+                return true;
+            }
+            if(p instanceof Street streetProperty && streetProperty.hasBuildings()){
                 return true;
             }
         }

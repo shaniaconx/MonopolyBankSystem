@@ -4,7 +4,7 @@ import java.util.Locale;
 abstract class Terminal {
     private TranslatorManager translatorManager;
 
-    public Terminal() {
+    Terminal() {
         this.translatorManager = new TranslatorManager();
     }
 

@@ -8,7 +8,6 @@ public class Translator {
 
     Translator(Locale locale){
         this.resourceBundle = ResourceBundle.getBundle("messages",locale);
-
     }
     public String translate(String key, Object... args) {
         try {

@@ -48,6 +48,7 @@ abstract class MonopolyCode implements Serializable {
                         return false;
                     default:
                         terminal.show("error_choosing");
+                        break;
                 }
             }while(choice != 1 || choice != 2);
         }

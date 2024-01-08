@@ -3,12 +3,25 @@ package monopolybank;
 import java.util.Scanner;
 
 public class GameManager {
-    private final Terminal mainTerminal;
+    private Terminal mainTerminal;
 
-    GameManager(){
-        this.mainTerminal = new TextTerminal();
-    }
     public void start(){
+        this.mainTerminal = new TextTerminal();
+        mainTerminal.show("select_language");
+        int choice = mainTerminal.read();
+        switch (choice){
+            case 1:
+                mainTerminal.getTranslatorManager().changeLanguage("es");
+                break;
+            case 2:
+                mainTerminal.getTranslatorManager().changeLanguage("en");
+                break;
+            default:
+                mainTerminal.show("default_language");
+                mainTerminal.getTranslatorManager().changeLanguage("es");
+                break;
+        }
+
         int option = 0;
         while (option != 1 || option != 2) {
             option = askForResumeGame();

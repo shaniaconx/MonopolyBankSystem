@@ -1,37 +1,36 @@
 package monopolybank;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.regex.Matcher;
 import static monopolybank.Constants.*;
 
 public class PaymentCharge extends MonopolyCode{
     private int amount;
-    private static Terminal terminal = getTerminal();
+    private static final Terminal terminal = getTerminal();
 
     PaymentCharge(String code, Terminal terminal){
         super(parseId(code), parseDescription(code), terminal);
 
-        Matcher moneyFounder = PATTERN.matcher(code); //finds the cuantity used in the description
-        if (moneyFounder.find()) {
-            String amountDesc = moneyFounder.group();
-            this.amount = Integer.parseInt(amountDesc.replaceAll("[^\\d.]", ""));
+        Matcher moneyFinder = PATTERN.matcher(code); //finds the cuantity used in the description
+        if (moneyFinder.find()) {
+            this.amount = Integer.parseInt(moneyFinder.group(1));
         }
     }
 
     private void showSummary(Player p, int amount){
         String playersColor = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
         if(amount < 0){
-            terminal.show("payment", this.getDescription(), playersColor, amount);
+            terminal.show("payment_charge_payment", this.getDescription(), playersColor, amount);
         } else {
-            terminal.show("charge", this.getDescription(), playersColor, amount);
+            terminal.show("payment_charge_charge", this.getDescription(), playersColor, amount);
         }
     }
 
     @Override
     public boolean doOperation(Player p){
-        showSummary(p, this.amount);
+        this.showSummary(p, this.amount);
         if (this.amount < 0){
-            boolean result = acceptCancel(() -> p.pay(this.amount, true), false);
+            int positiveAmount = -amount;
+            boolean result = acceptCancel(() -> p.pay(positiveAmount, true), false);
             if(!result){
                 p.traspaseProperties(null);
                 return false;

@@ -8,7 +8,7 @@ abstract class Property extends MonopolyCode{
     private boolean mortgaged;
     private int mortgageValue;
     private Player owner;
-    private static Terminal terminal = getTerminal();
+    private static final Terminal terminal = getTerminal();
 
     Property (int id, String className, String description, Terminal terminal, int price, boolean mortaged, int mortgageValue){
         super(id, description, terminal);
@@ -85,7 +85,7 @@ abstract class Property extends MonopolyCode{
         }
     }
 
-    private boolean mortgagingOperations (){
+    protected boolean mortgagingOperations (){
         if(this.mortgaged){
             this.owner.pay(this.mortgageValue, false);
         } else {
@@ -94,7 +94,7 @@ abstract class Property extends MonopolyCode{
         return mortgaged;
     }
 
-    private void showMortgageSummary(){
+    protected void showMortgageSummary(){
         if(mortgaged){
             terminal.show("property_unmortgage",this.getDescription(), this.owner.getColor(), this.mortgageValue);
         } else {
@@ -120,13 +120,13 @@ abstract class Property extends MonopolyCode{
         String [] parts = code.split(";");
         return Integer.parseInt(parts[0]);
     }
-    protected static String parseDescription(String code) {
-        String[] parts = code.split(";");
-        return parts[2];
-    }
     protected static String parseClass(String code){
         String[] parts = code.split(";");
         return parts[1];
+    }
+    protected static String parseDescription(String code) {
+        String[] parts = code.split(";");
+        return parts[2];
     }
     protected static int parseMortgageValue(String code){
         String[] parts = code.split(";");
