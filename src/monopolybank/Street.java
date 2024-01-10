@@ -35,7 +35,11 @@ public class Street extends Property {
 
     @Override
     public int getPaymentForRent() {
-        return 0; //todo once buyHouses is finished
+        if (this.builtHotel){
+            return this.costStayingWithHouses.get(5);
+        } else {
+            return this.costStayingWithHouses.get(builtHouses);
+        }
     }
 
     @Override
@@ -51,11 +55,11 @@ public class Street extends Property {
                 break;
             case 2:
                 //Buy Houses/Hotels
-
+                this.buyHouses();
                 break;
             case 3:
-                //Sell Houses/Hotels
-
+                //Sell Houses/Hotel
+                this.sellHouses(false);
                 break;
             default:
                 terminal.show("canceled");
@@ -67,19 +71,55 @@ public class Street extends Property {
         Player owner = getOwner();
 
         if(this.builtHotel){
-            terminal.show("sell_hotel");
-            boolean done = acceptCancel(() -> owner.getPaid(this.housePrice), mandatory);
+            terminal.show("sell_hotel", this.getDescription(), this.housePrice);
 
+            boolean done = acceptCancel(() -> owner.getPaid(this.housePrice), mandatory);
             if(done){
                 setBuiltHotel(false);
             }
-        } else {
-            terminal.show("number_houses_toSell");
-            int cuantity = terminal.read();
-            boolean done = acceptCancel(() -> owner.getPaid(this.housePrice * cuantity), mandatory);
+        } else if (this.hasBuildings()){
+            terminal.show("number_houses_toSell", this.builtHouses, this.getDescription());
+            int quantity;
+            do {
+                quantity = terminal.read();
+                if(quantity <= builtHouses){
+                    terminal.show("number_of_houses_error");
+                }
+            }while (quantity <= builtHouses);
 
+            int totalPrice = this.housePrice * quantity;
+            terminal.show("sell_houses", quantity, totalPrice);
+            boolean done = acceptCancel(() -> owner.getPaid(totalPrice), mandatory);
             if(done){
-                setBuiltHouses(builtHouses-cuantity);
+                setBuiltHouses(builtHouses-quantity);
+            }
+        }
+    }
+
+    private void buyHouses(){
+        Player owner = getOwner();
+        if (!builtHotel && builtHouses == 4){
+            terminal.show("buy_hotel", this.getDescription(), this.housePrice);
+            boolean done = acceptCancel(() -> owner.pay(this.housePrice, false), false);
+            if (done){
+                this.setBuiltHotel(true);
+                this.setBuiltHouses(0);
+            }
+        } else if (!this.builtHotel && builtHouses < 4){
+            terminal.show("number_houses_toBuy", this.builtHouses, this.getDescription());
+            int quantity;
+            do {
+                quantity = terminal.read();
+                if((quantity + builtHouses) > 4){
+                    terminal.show("number_of_houses_error");
+                }
+            }while ((quantity + builtHouses) > 4);
+
+            int totalHousePrice = housePrice * quantity;
+            terminal.show("buy_houses", quantity, totalHousePrice);
+            boolean done = acceptCancel(() -> owner.pay(totalHousePrice, false), false);
+            if (done){
+                this.setBuiltHouses(quantity + builtHouses);
             }
         }
     }
