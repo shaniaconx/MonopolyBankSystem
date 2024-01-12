@@ -8,15 +8,16 @@ import static monopolybank.Constants.PATTERN;
 public class RepairsCard extends MonopolyCode{
     private int amountHouse;
     private int amountHotel;
-    private static final Terminal terminal = getTerminal();
+    private final Terminal terminal;
 
     RepairsCard(String code, Terminal terminal){
         super(parseId(code), parseDescription(code), terminal);
-
+        this.terminal = terminal;
         Matcher moneyFinder = PATTERN.matcher(parseDescription(code)); //finds the cuantity used in the description
         int counter = 0;
         while (moneyFinder.find()){
-            int number = Integer.parseInt(moneyFinder.group(1));
+            String moneyString = moneyFinder.group();
+            int number = Integer.parseInt(moneyString.replace("€", "").trim());
             if (counter == 0){
                 this.amountHouse = number;
             } else if (counter == 1) {
@@ -37,13 +38,16 @@ public class RepairsCard extends MonopolyCode{
     @Override
     public boolean doOperation(Player p){
         ArrayList<Property> playersProperties = p.getProperties();
-        int playerHouses;
-        int playerHotels;
-        for (Street unit : playersProperties) {
-            if(unit.hasHotel){
-                playerHotels += 1;
-            } else {
-                playerHouses += unit.getBuiltHouses;
+        int playerHouses = 0;
+        int playerHotels = 0;
+        for (Property unit : playersProperties) {
+            if (unit instanceof Street) {
+                Street street = (Street) unit;
+                if (street.isBuiltHotel()) {
+                    playerHotels += 1;
+                } else {
+                    playerHouses += street.getBuiltHouses();
+                }
             }
         }
         int totalForHouses = playerHouses * getAmountHouse();

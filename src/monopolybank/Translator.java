@@ -2,19 +2,20 @@ package monopolybank;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import static monopolybank.Constants.*;
 
 public class Translator {
     private ResourceBundle resourceBundle;
 
     Translator(Locale locale){
-        this.resourceBundle = ResourceBundle.getBundle("messages",locale);
+        resourceBundle = ResourceBundle.getBundle(LANGUAGES_PATH, locale);
     }
     public String translate(String key, Object... args) {
         try {
             String message = resourceBundle.getString(key);
             return String.format(message, args);
         } catch (MissingResourceException e) {
-            // Retornar la clave misma si no se encuentra la traducción
+            // if translation not found return key
             return key;
         }
     }

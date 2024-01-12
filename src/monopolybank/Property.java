@@ -8,10 +8,11 @@ abstract class Property extends MonopolyCode{
     private boolean mortgaged;
     private int mortgageValue;
     private Player owner;
-    private static final Terminal terminal = getTerminal();
+    private final Terminal terminal;
 
     Property (int id, String className, String description, Terminal terminal, int price, boolean mortaged, int mortgageValue){
         super(id, description, terminal);
+        this.terminal = terminal;
         setOwner(null);
         setClassName(className);
     }
@@ -58,7 +59,7 @@ abstract class Property extends MonopolyCode{
             return true;
         } else if (actualOwner.equals(p)) {
             this.doOwnerOperations();
-            return  true;
+            return true;
         } else { //!actualOwner.equals(p)
             int rentToPay = this.getPaymentForRent();
             this.showPaymentSummary(rentToPay, p);

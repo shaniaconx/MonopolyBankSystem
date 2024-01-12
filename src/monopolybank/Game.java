@@ -1,27 +1,28 @@
 package monopolybank;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.*;
 
-import static monopolybank.Constants.*;
-
 public class Game implements Serializable {
-    //List <MonopolyCode> codes = null;
-    private Map<Integer, MonopolyCode> codes = null;
-    private Map<Integer, Player> players = null;
+    private static int gameId;
+    private Map<Integer, MonopolyCode> codes;
+    private Map<Integer, Player> players;
     private final Terminal terminal;
 
     Game (Terminal terminal){
         this.terminal = terminal;
-        this.createPlayers();
-        this.loadMonopolyCodes(CONFIG_CODE);
+        gameId = GameManager.getActualGameId();
+        players = createPlayers();
+        this.loadMonopolyCodes();
     }
 
-    private void loadMonopolyCodes (String fileName){
+    private void loadMonopolyCodes (){
         try {
             this.codes = new HashMap<Integer, MonopolyCode>();
-            Scanner myReader = new Scanner(fileName);
+            File file = new File(Constants.CONFIG_CODE);
+            Scanner myReader = new Scanner(file);
 
             while (myReader.hasNextLine()) {
                 String actualLine = myReader.nextLine();
@@ -64,11 +65,13 @@ public class Game implements Serializable {
     }
 
     public void play(){
+        loadMonopolyCodes();
+
         while (players.size() > 1) {
             terminal.show("card_code");
             int cardCode = terminal.read();
 
-            terminal.show("player_color");
+            terminal.show("player_code");
             int playerCode = terminal.read();
 
             Player actualPlayer = players.get(playerCode);
@@ -78,16 +81,28 @@ public class Game implements Serializable {
             if (!result){
                 removePlayer(playerCode);
             }
+            //save game
+            terminal.show("save_game_options");
+            int saveOption = terminal.read();
+            if(saveOption == 1 || saveOption == 2){
+                GameManager.saveGame(this, gameId);
+                if(saveOption == 2){
+                    break;
+                }
+            }
         }
         //end game
-        Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
-        Player winner = winnerEntry.getValue();
-        String winnerColor = winner.getColor().toString();
-        terminal.show("winner", winnerColor);
+        if (players.size() == 1){
+            Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
+            Player winner = winnerEntry.getValue();
+            String winnerColor = winner.getColor().toString();
+            terminal.show("winner", winnerColor);
+        }
     }
 
-    private void createPlayers(){
+    private Map<Integer, Player> createPlayers(){
         int numPlayers;
+        Map<Integer, Player> map = new HashMap<>();
         do {
             terminal.show("number_of_players");
             numPlayers = terminal.read();
@@ -101,12 +116,13 @@ public class Game implements Serializable {
             do{
                 terminal.show("select_color");
                 playerId = terminal.read();
-                if (players.containsKey(playerId)){
-                    terminal.show("color_choosen");
+                if (map != null && map.containsKey(playerId)){
+                    terminal.show("color_chosen");
                 }
-            }while (players.containsKey(playerId));
-            players.put(playerId, new Player(playerId, this.terminal));
+            }while (map != null && map.containsKey(playerId));
+            map.put(playerId, new Player(playerId, this.terminal));
         }
+        return map;
     }
 
     private void removePlayer(int playerId){

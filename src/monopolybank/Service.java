@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 public class Service extends Property{
     private final ArrayList<Integer> costStaying;
-    private static final Terminal terminal = getTerminal();
+    private final Terminal terminal;
 
     Service(String code, Terminal terminal){
         super(parseId(code), parseClass(code), parseDescription(code), terminal, parseMortgageValue(code)*2, false, parseMortgageValue(code));
 
+        this.terminal = terminal;
         costStaying = new ArrayList<>();
         for (int i = 3; i < 5; i++){
             costStaying.add(parseCostStaying(i, code));

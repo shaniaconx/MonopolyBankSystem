@@ -1,5 +1,4 @@
 package monopolybank;
-import java.util.Locale;
 
 abstract class Terminal {
     private TranslatorManager translatorManager;

@@ -5,21 +5,24 @@ import static monopolybank.Constants.*;
 
 public class PaymentCharge extends MonopolyCode{
     private int amount;
-    private static final Terminal terminal = getTerminal();
+    private final Terminal terminal;
 
     PaymentCharge(String code, Terminal terminal){
         super(parseId(code), parseDescription(code), terminal);
 
+        this.terminal = terminal;
         Matcher moneyFinder = PATTERN.matcher(code); //finds the cuantity used in the description
         if (moneyFinder.find()) {
-            this.amount = Integer.parseInt(moneyFinder.group(1));
+            String moneyString = moneyFinder.group();
+            this.amount = Integer.parseInt(moneyString.replace("€", "").trim());
         }
     }
 
     private void showSummary(Player p, int amount){
         String playersColor = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
         if(amount < 0){
-            terminal.show("payment_charge_payment", this.getDescription(), playersColor, amount);
+            int positiveAmount = -1*amount;
+            terminal.show("payment_charge_payment", this.getDescription(), playersColor, positiveAmount);
         } else {
             terminal.show("payment_charge_charge", this.getDescription(), playersColor, amount);
         }

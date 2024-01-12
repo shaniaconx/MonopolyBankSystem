@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.function.Supplier;
 
 abstract class MonopolyCode implements Serializable {
-    private int id;
-    private String description;
-    private static Terminal terminal;
+    private final int id;
+    private final String description;
+    private final Terminal terminal;
 
     MonopolyCode(int id, String description, Terminal terminal){
         this.id = id;
         this.description = description;
-        MonopolyCode.terminal = terminal;
+        this.terminal = terminal;
     }
 
     @Override
@@ -27,12 +27,12 @@ abstract class MonopolyCode implements Serializable {
         return description;
     }
 
-    public static Terminal getTerminal() {
+    public Terminal getTerminal() {
         return terminal;
     }
 
     public abstract boolean doOperation(Player p);
-    public static boolean acceptCancel(Supplier<Boolean> operation, boolean mandatory){
+    public boolean acceptCancel(Supplier<Boolean> operation, boolean mandatory){
         if (mandatory){
             terminal.show("mandatory");
             return operation.get();

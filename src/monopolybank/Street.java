@@ -7,7 +7,7 @@ public class Street extends Property {
     private boolean builtHotel;
     private final int housePrice;
     private final ArrayList<Integer> costStayingWithHouses;
-    private static final Terminal terminal = getTerminal();
+    private final Terminal terminal;
 
 
     Street(String code, Terminal terminal){
@@ -16,7 +16,7 @@ public class Street extends Property {
         this.builtHouses = 0;
         this.builtHotel = false;
         this.housePrice = parseHousePrice(code);
-
+        this.terminal = terminal;
         costStayingWithHouses = new ArrayList<>();
         for (int i = 3; i < 9  ; i++){
             costStayingWithHouses.add(parseCostStayingWithHouses(i, code));
@@ -137,5 +137,13 @@ public class Street extends Property {
 
     public void setBuiltHotel(boolean builtHotel) {
         this.builtHotel = builtHotel;
+    }
+
+    public int getBuiltHouses() {
+        return builtHouses;
+    }
+
+    public boolean isBuiltHotel() {
+        return builtHotel;
     }
 }
