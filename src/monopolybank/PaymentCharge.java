@@ -16,6 +16,7 @@ public class PaymentCharge extends MonopolyCode{
             String moneyString = moneyFinder.group();
             this.amount = Integer.parseInt(moneyString.replace("€", "").trim());
         }
+
     }
 
     private void showSummary(Player p, int amount){
@@ -29,19 +30,19 @@ public class PaymentCharge extends MonopolyCode{
     }
 
     @Override
-    public boolean doOperation(Player p){
+    public int doOperation(Player p){
         this.showSummary(p, this.amount);
         if (this.amount < 0){
             int positiveAmount = -amount;
-            boolean result = acceptCancel(() -> p.pay(positiveAmount, true), false);
-            if(!result){
+            int result = acceptCancel(() -> p.pay(positiveAmount, true), true);
+            if(result == 0){
                 p.traspaseProperties(null);
-                return false;
             }
+            return result;
         } else {
             acceptCancel(() -> p.getPaid(this.amount), false);
+            return 1;
         }
-        return true;
     }
     private static int parseId(String code){
         String [] parts = code.split(";");

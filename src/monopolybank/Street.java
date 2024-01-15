@@ -73,8 +73,8 @@ public class Street extends Property {
         if(this.builtHotel){
             terminal.show("sell_hotel", this.getDescription(), this.housePrice);
 
-            boolean done = acceptCancel(() -> owner.getPaid(this.housePrice), mandatory);
-            if(done){
+            int done = acceptCancel(() -> owner.getPaid(this.housePrice), mandatory);
+            if(done == 1){
                 setBuiltHotel(false);
             }
         } else if (this.hasBuildings()){
@@ -89,8 +89,8 @@ public class Street extends Property {
 
             int totalPrice = this.housePrice * quantity;
             terminal.show("sell_houses", quantity, totalPrice);
-            boolean done = acceptCancel(() -> owner.getPaid(totalPrice), mandatory);
-            if(done){
+            int done = acceptCancel(() -> owner.getPaid(totalPrice), mandatory);
+            if(done == 1){
                 setBuiltHouses(builtHouses-quantity);
             }
         }
@@ -100,8 +100,8 @@ public class Street extends Property {
         Player owner = getOwner();
         if (!builtHotel && builtHouses == 4){
             terminal.show("buy_hotel", this.getDescription(), this.housePrice);
-            boolean done = acceptCancel(() -> owner.pay(this.housePrice, false), false);
-            if (done){
+            int done = acceptCancel(() -> owner.pay(this.housePrice, false), false);
+            if (done == 1){
                 this.setBuiltHotel(true);
                 this.setBuiltHouses(0);
             }
@@ -117,8 +117,8 @@ public class Street extends Property {
 
             int totalHousePrice = housePrice * quantity;
             terminal.show("buy_houses", quantity, totalHousePrice);
-            boolean done = acceptCancel(() -> owner.pay(totalHousePrice, false), false);
-            if (done){
+            int done = acceptCancel(() -> owner.pay(totalHousePrice, false), false);
+            if (done == 1){
                 this.setBuiltHouses(quantity + builtHouses);
             }
         }

@@ -1,6 +1,8 @@
 package monopolybank;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.InputMismatchException;
 import java.util.function.Supplier;
 
 abstract class MonopolyCode implements Serializable {
@@ -31,27 +33,25 @@ abstract class MonopolyCode implements Serializable {
         return terminal;
     }
 
-    public abstract boolean doOperation(Player p);
-    public boolean acceptCancel(Supplier<Boolean> operation, boolean mandatory){
+    public abstract int doOperation(Player p);
+    public int acceptCancel(Supplier<Integer> operation, boolean mandatory){
         if (mandatory){
             terminal.show("mandatory");
             return operation.get();
-        } else {
-            int choice;
-            do {
-                choice = terminal.read();
-                switch (choice) {
-                    case 1:
-                        return operation.get();
-                    case 2:
-                        terminal.show("cancelled");
-                        return false;
-                    default:
-                        terminal.show("error_choosing");
-                        break;
-                }
-            }while(choice != 1 || choice != 2);
         }
-        return false;
+        int choice = terminal.read();
+
+        try{
+            if (choice == 1){
+                return operation.get();
+            } else if (choice == 2) {
+                terminal.show("cancelled");
+                return -1;
+            }
+        }catch (InputMismatchException e){
+            terminal.show("error_choosing");
+        }
+
+        return choice; //todo ?
     }
 }

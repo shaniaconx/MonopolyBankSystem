@@ -36,7 +36,7 @@ public class RepairsCard extends MonopolyCode{
     }
 
     @Override
-    public boolean doOperation(Player p){
+    public int doOperation(Player p){
         ArrayList<Property> playersProperties = p.getProperties();
         int playerHouses = 0;
         int playerHotels = 0;
@@ -55,12 +55,11 @@ public class RepairsCard extends MonopolyCode{
         int totalPayment = totalForHotel + totalForHouses;
         this.showSummary(p, playerHouses, totalForHouses, playerHotels, totalForHotel, totalPayment);
 
-        boolean result = acceptCancel(() -> p.pay(totalPayment, true), false);
-        if(!result){
+        int result = acceptCancel(() -> p.pay(totalPayment, true), true);
+        if(result == 0){
             p.traspaseProperties(null);
-            return false;
         }
-        return true;
+        return result;
     }
 
     private void showSummary(Player p, int playerHouses, int totalForHouses, int playerHotels, int totalForHotels, int totalPayment){

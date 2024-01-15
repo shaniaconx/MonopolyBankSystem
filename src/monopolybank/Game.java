@@ -71,16 +71,26 @@ public class Game implements Serializable {
             terminal.show("card_code");
             int cardCode = terminal.read();
 
-            terminal.show("player_code");
-            int playerCode = terminal.read();
+            int playerCode;
+            do {
+                terminal.show("player_code_title");
+                for (Integer id : players.keySet()) {
+                    Player p = players.get(id);
+                    String color = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
+                    terminal.show("player_code", color, id);
+                }
+                playerCode = terminal.read();
+            }while (!players.containsKey(playerCode));
 
             Player actualPlayer = players.get(playerCode);
             MonopolyCode actualCard = codes.get(cardCode);
 
-            boolean result = actualCard.doOperation(actualPlayer);
-            if (!result){
+            int result = actualCard.doOperation(actualPlayer);
+            if (result == 0){
                 removePlayer(playerCode);
             }
+            //game status
+            gameStatus();
             //save game
             terminal.show("save_game_options");
             int saveOption = terminal.read();
@@ -95,7 +105,7 @@ public class Game implements Serializable {
         if (players.size() == 1){
             Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
             Player winner = winnerEntry.getValue();
-            String winnerColor = winner.getColor().toString();
+            String winnerColor = terminal.getTranslatorManager().getTranslator().translate(winner.getColor().toString());
             terminal.show("winner", winnerColor);
         }
     }
@@ -126,9 +136,20 @@ public class Game implements Serializable {
     }
 
     private void removePlayer(int playerId){
-        this.players.remove(playerId);
         Player eliminated = players.get(playerId);
         String colorEliminated = terminal.getTranslatorManager().getTranslator().translate(eliminated.getColor().toString());
         terminal.show("player_elimination", colorEliminated);
+        this.players.remove(playerId);
+    }
+
+    private void gameStatus(){
+        terminal.show("game_status_title");
+        int statusOption = terminal.read();
+        if (statusOption == 1){
+            for (Map.Entry<Integer, Player> entry : players.entrySet()) {
+                Player player = entry.getValue();
+                player.stringPlayerInfo();
+            }
+        }
     }
 }

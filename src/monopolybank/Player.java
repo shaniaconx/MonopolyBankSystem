@@ -36,8 +36,8 @@ enum Color {
 public class Player implements Serializable {
     private final int id;
     private final Color color;
-    private int balance = 1500;
-    private ArrayList<Property> properties = null;
+    private int balance;
+    private ArrayList<Property> properties;
     private boolean bankrupt;
     private final Terminal terminal;
 
@@ -45,7 +45,7 @@ public class Player implements Serializable {
         this.id = id;
         color = Color.association(id);
         this.balance = 1500;
-        this.properties = null;
+        this.properties = new ArrayList<>();
         this.bankrupt = false;
         this.terminal = terminal;
     }
@@ -57,21 +57,18 @@ public class Player implements Serializable {
     public void stringPlayerInfo() {
         String colorTranslated = terminal.getTranslatorManager().getTranslator().translate(getColor().toString());
         terminal.show("player_info", colorTranslated, getBalance());
+        this.showProperties();
     }
 
-    public int getBalance() {
-        return balance;
-    }
-
-    public boolean getPaid (int balance) {
+    public int getPaid (int balance) {
         this.balance += balance;
-        return true;
+        return 1;
     }
 
-    public boolean pay (int amount, boolean mandatory){
+    public int pay (int amount, boolean mandatory){
         if (hasEnoughMoney(amount)){
             balance -= amount;
-            return true;
+            return 1;
         }
         if (!hasEnoughMoney(amount) && mandatory) {
             this.setBankrupt(true);
@@ -82,14 +79,14 @@ public class Player implements Serializable {
             if (hasEnoughMoney(amount)){
                 setBankrupt(false);
                 balance -= amount;
-                return true;
+                return 1;
             } else {
-                return false;
+                return 0;
             }
         }
         //!hasEnoughMoney(amount) && !mandatory
         terminal.show("no_money");
-        return false;
+        return -1;
     }
 
     private boolean hasEnoughMoney(int amount) {
@@ -136,9 +133,31 @@ public class Player implements Serializable {
         return properties;
     }
 
+    public void addProperty(Property property) {
+        this.properties.add(property);
+    }
+
+    public void removeProperty(Property property) {
+        properties.remove(property);
+    }
+
     public void traspaseProperties(Player newOwner){
         for (Property p: this.properties) {
             p.setOwner(newOwner);
+            newOwner.addProperty(p);
+            this.removeProperty(p);
+        }
+    }
+
+    public void showProperties() {
+        if (properties.isEmpty()) {
+            terminal.show("no_properties");
+            return;
+        }
+
+        terminal.show("player_properties");
+        for (Property property : properties) {
+            terminal.show("property", property.getDescription());
         }
     }
 
@@ -155,6 +174,10 @@ public class Player implements Serializable {
         // typecast o to Player so that we can compare
         Player c = (Player) o;
 
-        return getColor().equals(c.getColor());
+        return getColor().toString().equals(c.getColor().toString());
+    }
+
+    public int getBalance() {
+        return balance;
     }
 }

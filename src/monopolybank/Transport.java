@@ -19,12 +19,11 @@ public class Transport extends Property{
         int rent = 0;
         Player actualOwner = this.getOwner();
         for (Property p: actualOwner.getProperties()) {
-            String actualClass = p.getPropertyClass();
-            if (this.getPropertyClass().equals(actualClass)){
+            if (p instanceof Transport){
                 rent++;
             }
         }
-        return costStaying.get(rent);
+        return costStaying.get(rent-1);
     }
 
 

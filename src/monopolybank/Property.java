@@ -10,8 +10,11 @@ abstract class Property extends MonopolyCode{
     private Player owner;
     private final Terminal terminal;
 
-    Property (int id, String className, String description, Terminal terminal, int price, boolean mortaged, int mortgageValue){
+    Property (int id, String className, String description, Terminal terminal, int price, boolean mortgaged, int mortgageValue){
         super(id, description, terminal);
+        this.price = price;
+        this.mortgaged = mortgaged;
+        this.mortgageValue = mortgageValue;
         this.terminal = terminal;
         setOwner(null);
         setClassName(className);
@@ -40,9 +43,6 @@ abstract class Property extends MonopolyCode{
     private void setClassName(String name){
         this.className = name;
     }
-    public String getPropertyClass(){
-        return this.className;
-    }
 
     public int getPrice() {
         return price;
@@ -51,26 +51,31 @@ abstract class Property extends MonopolyCode{
     public abstract int getPaymentForRent();
 
     @Override
-    public boolean doOperation(Player p) {
+    public int doOperation(Player p) {
         Player actualOwner = this.getOwner();
         if (actualOwner == null){
             this.showPurchaseSummary(this.getPrice(), p);
-            acceptCancel(() -> p.pay(this.getPrice(), false), false);
-            return true;
+            int result = acceptCancel(() -> p.pay(this.getPrice(), false), false);
+            if (result == 1) {
+                this.setOwner(p);
+                p.addProperty(this);
+            }
+            return result;
         } else if (actualOwner.equals(p)) {
             this.doOwnerOperations();
-            return true;
+            return 1;
         } else { //!actualOwner.equals(p)
             int rentToPay = this.getPaymentForRent();
             this.showPaymentSummary(rentToPay, p);
-            boolean result = acceptCancel(() -> p.pay(rentToPay, true), true);
-            if(result){
+            int result = acceptCancel(() -> p.pay(rentToPay, true), true);
+            if(result == 1){
                 actualOwner.getPaid(rentToPay);
-                return true;
-            }else{
+                return 1;
+            }else if (result == 0){
                 p.traspaseProperties(actualOwner);
-                return false;
+                return 0;
             }
+            return result;
         }
     }
 
@@ -86,29 +91,32 @@ abstract class Property extends MonopolyCode{
         }
     }
 
-    protected boolean mortgagingOperations (){
+    protected int mortgagingOperations (){
         if(this.mortgaged){
-            this.owner.pay(this.mortgageValue, false);
+            return this.owner.pay(this.mortgageValue, false);
         } else {
-            this.owner.getPaid(this.mortgageValue);
+            return this.owner.getPaid(this.mortgageValue);
         }
-        return mortgaged;
     }
 
     protected void showMortgageSummary(){
+        String owner = terminal.getTranslatorManager().getTranslator().translate(this.getOwner().getColor().toString());
         if(mortgaged){
-            terminal.show("property_unmortgage",this.getDescription(), this.owner.getColor(), this.mortgageValue);
+            terminal.show("property_unmortgage",this.getDescription(), owner, this.mortgageValue);
         } else {
-            terminal.show("property_mortgage",this.getDescription(), this.owner.getColor(), this.mortgageValue);
+            terminal.show("property_mortgage",this.getDescription(), owner, this.mortgageValue);
         }
     }
 
     public void showPaymentSummary(int amount, Player p){
-        terminal.show("property_rent_payment", p.getColor(), this.getDescription(), amount, this.getOwner().getColor());
+        String player = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
+        String owner = terminal.getTranslatorManager().getTranslator().translate(this.getOwner().getColor().toString());
+        terminal.show("property_rent_payment", player, this.getDescription(), amount, owner);
     }
 
     public void showPurchaseSummary(int amount, Player p){
-        terminal.show("property_purchase_payment", this.getDescription(), p.getColor(), amount);
+        String player = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
+        terminal.show("property_purchase_payment", this.getDescription(),player, amount);
     }
 
 

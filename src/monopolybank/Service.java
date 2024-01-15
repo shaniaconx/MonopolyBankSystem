@@ -22,13 +22,17 @@ public class Service extends Property{
         terminal.show("dice_number");
         int num = terminal.read();
         Player actualOwner = this.getOwner();
-        for (Property p: actualOwner.getProperties()) {
-            String actualClass = p.getPropertyClass();
-            if (this.getPropertyClass().equals(actualClass)){
-                rent++;
+
+        if (actualOwner != null && actualOwner.getProperties() != null) {
+            for (Property p : actualOwner.getProperties()) {
+                if (p instanceof Service) {
+                    rent++;
+                }
             }
         }
-        return num*costStaying.get(rent);
+
+        return num * costStaying.get(rent-1);
+
     }
 
 }
