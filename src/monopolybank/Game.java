@@ -1,5 +1,6 @@
 package monopolybank;
 
+import static monopolybank.Constants.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -11,17 +12,24 @@ public class Game implements Serializable {
     private Map<Integer, Player> players;
     private final Terminal terminal;
 
+    /**
+     * Constructor de Game. Inicializa el juego con un terminal especí­fico y carga los códigos y jugadores.
+     *
+     * @param terminal Terminal utilizado para la interacción con el usuario.
+     */
     Game (Terminal terminal){
         this.terminal = terminal;
         gameId = GameManager.getActualGameId();
         players = createPlayers();
-        this.loadMonopolyCodes();
     }
 
+    /**
+     * Carga los códigos de Monopoly desde un archivo de configuración.
+     */
     private void loadMonopolyCodes (){
         try {
-            this.codes = new HashMap<Integer, MonopolyCode>();
-            File file = new File(Constants.CONFIG_CODE);
+            this.codes = new HashMap<>();
+            File file = new File(CONFIG_CODE);
             Scanner myReader = new Scanner(file);
 
             while (myReader.hasNextLine()) {
@@ -59,48 +67,54 @@ public class Game implements Serializable {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Extrae el tipo de código Monopoly de una lí­nea de texto.
+     *
+     * @param line Lí­nea del archivo de configuración.
+     * @return Tipo de clase del código de Monopoly.
+     */
     private String getCodeClass(String line){
         String[] parts = line.split(";");
         return parts[1];
     }
 
+    /**
+     * Comienza el juego y gestiona su flujo principal.
+     */
     public void play(){
         loadMonopolyCodes();
+        boolean exitGame = false;
+        
+        //game loop
+        while (players.size() > 1 && !exitGame) {
+                terminal.show("card_code");
+                int cardCode = terminal.read();
 
-        while (players.size() > 1) {
-            terminal.show("card_code");
-            int cardCode = terminal.read();
+                int playerCode;
+                do {
+                    terminal.show("player_code_title");
+                    for (Integer id : players.keySet()) {
+                        Player p = players.get(id);
+                        String color = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
+                        terminal.show("player_code", color, id);
+                    }
+                    playerCode = terminal.read();
+                }while (!players.containsKey(playerCode));
 
-            int playerCode;
-            do {
-                terminal.show("player_code_title");
-                for (Integer id : players.keySet()) {
-                    Player p = players.get(id);
-                    String color = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
-                    terminal.show("player_code", color, id);
+                Player actualPlayer = players.get(playerCode);
+                MonopolyCode actualCard = codes.get(cardCode);
+
+                int result = actualCard.doOperation(actualPlayer);
+                if (result == 0){
+                    removePlayer(playerCode);
                 }
-                playerCode = terminal.read();
-            }while (!players.containsKey(playerCode));
 
-            Player actualPlayer = players.get(playerCode);
-            MonopolyCode actualCard = codes.get(cardCode);
-
-            int result = actualCard.doOperation(actualPlayer);
-            if (result == 0){
-                removePlayer(playerCode);
-            }
-            //game status
-            gameStatus();
-            //save game
-            terminal.show("save_game_options");
-            int saveOption = terminal.read();
-            if(saveOption == 1 || saveOption == 2){
-                GameManager.saveGame(this, gameId);
-                if(saveOption == 2){
-                    break;
+                if(gameStatusAndSave()){
+                    exitGame = true;
                 }
-            }
         }
+        
         //end game
         if (players.size() == 1){
             Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
@@ -110,6 +124,11 @@ public class Game implements Serializable {
         }
     }
 
+    /**
+     * Crea y retorna un mapa de jugadores basado en la entrada del usuario.
+     *
+     * @return Mapa de jugadores.
+     */
     private Map<Integer, Player> createPlayers(){
         int numPlayers;
         Map<Integer, Player> map = new HashMap<>();
@@ -135,6 +154,11 @@ public class Game implements Serializable {
         return map;
     }
 
+    /**
+     * Elimina un jugador del juego basado en su ID.
+     *
+     * @param playerId ID del jugador a eliminar.
+     */
     private void removePlayer(int playerId){
         Player eliminated = players.get(playerId);
         String colorEliminated = terminal.getTranslatorManager().getTranslator().translate(eliminated.getColor().toString());
@@ -142,14 +166,29 @@ public class Game implements Serializable {
         this.players.remove(playerId);
     }
 
-    private void gameStatus(){
-        terminal.show("game_status_title");
-        int statusOption = terminal.read();
-        if (statusOption == 1){
-            for (Map.Entry<Integer, Player> entry : players.entrySet()) {
-                Player player = entry.getValue();
-                player.stringPlayerInfo();
-            }
+    /**
+     * Muestra el estado del juego y ofrece opciones para guardar.
+     */
+    private boolean gameStatusAndSave(){
+        terminal.show("menu_status_save");
+        int option = terminal.read();
+        
+        switch(option){
+            case 1:
+                for (Map.Entry<Integer, Player> entry : players.entrySet()) {
+                    Player player = entry.getValue();
+                    player.stringPlayerInfo();
+                }
+                GameManager.saveGame(this, gameId);
+                return false;
+            case 2:
+                terminal.show("bye_message");
+                GameManager.saveGame(this, gameId);
+                return true;
+            default:
+                GameManager.saveGame(this, gameId);
+                return false;
         }
+        
     }
 }

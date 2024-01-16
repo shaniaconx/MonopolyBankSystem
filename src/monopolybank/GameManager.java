@@ -7,12 +7,19 @@ public class GameManager {
     private static int actualGameId;
     private Terminal mainTerminal;
 
+    /**
+     * Constructor de GameManager.
+     * Carga el último ID de juego guardado y lo incrementa para el nuevo juego.
+     */
     GameManager(){
         int lastGameId = loadLastGameId();
         actualGameId = lastGameId++;
         saveLastGameId();
     }
 
+     /**
+     * Guarda el ID del último juego en un archivo.
+     */
     public static void saveLastGameId() {
         try (PrintWriter out = new PrintWriter(ID_FILE)) {
             out.println(actualGameId);
@@ -21,6 +28,11 @@ public class GameManager {
         }
     }
 
+    /**
+     * Carga el último ID de juego desde un archivo.
+     *
+     * @return El último ID de juego.
+     */
     public static int loadLastGameId() {
         int lastGameId;
         try (BufferedReader reader = new BufferedReader(new FileReader(ID_FILE))) {
@@ -31,10 +43,18 @@ public class GameManager {
         return lastGameId;
     }
 
+    /**
+     * Obtiene el ID actual del juego.
+     *
+     * @return El ID actual del juego.
+     */
     public static int getActualGameId(){
         return actualGameId;
     }
 
+    /**
+     * Inicia el juego configurando el idioma y preguntando al usuario si desea continuar un juego guardado o iniciar uno nuevo.
+     */
     public void start(){
         this.mainTerminal = new TextTerminal();
         mainTerminal.show("select_language");
@@ -48,6 +68,9 @@ public class GameManager {
                 break;
             case 3:
                 mainTerminal.getTranslatorManager().changeLanguage("cat");
+                break;
+            case 4 :
+                mainTerminal.getTranslatorManager().changeLanguage("eusk");
                 break;
             default:
                 mainTerminal.show("default_language");
@@ -80,23 +103,40 @@ public class GameManager {
 
 
     }
+    
+     /**
+     * Pregunta al usuario si desea reanudar un juego guardado.
+     *
+     * @return La opción seleccionada por el usuario.
+     */
     private int askForResumeGame(){
         mainTerminal.show("game_options");
         return mainTerminal.read();
     }
 
+    /**
+     * Guarda un juego en un archivo.
+     *
+     * @param game El juego a guardar.
+    * @param id El ID del juego a guardar.
+    */
     public static void saveGame(Game game, int id){
         String gamePath = GAMES_PATH + id + ".ser";
 
-        try{
-            FileOutputStream fileOutputStream = new FileOutputStream(gamePath);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        try(FileOutputStream fileOutputStream = new FileOutputStream(gamePath);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
             objectOutputStream.writeObject(game);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+    * Carga un juego guardado desde un archivo.
+    *
+    * @param gameId El ID del juego a cargar.
+    * @return El juego cargado, o null si ocurre un error.
+    */
     public Game loadGame(int gameId){
         String gamePath = GAMES_PATH + gameId + ".ser";
         Game game = null;
@@ -113,6 +153,11 @@ public class GameManager {
         return game;
     }
 
+    /**
+    * Muestra los juegos guardados disponibles.
+    *
+    * @return true si hay juegos guardados disponibles, false en caso contrario.
+    */
     private boolean showSavedGames(){
         File folder = new File (GAMES_PATH);
         File[] listOfGames = folder.listFiles();

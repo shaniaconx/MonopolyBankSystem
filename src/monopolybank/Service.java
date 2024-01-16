@@ -6,6 +6,12 @@ public class Service extends Property{
     private final ArrayList<Integer> costStaying;
     private final Terminal terminal;
 
+    /**
+     * Constructor para la clase Service.
+     *
+     * @param code      Código que representa la información de la propiedad de servicio.
+     * @param terminal  Terminal para interactuar con el usuario.
+     */
     Service(String code, Terminal terminal){
         super(parseId(code), parseClass(code), parseDescription(code), terminal, parseMortgageValue(code)*2, false, parseMortgageValue(code));
 
@@ -16,6 +22,11 @@ public class Service extends Property{
         }
     }
 
+    /**
+     * Calcula el pago por alquiler basado en el número obtenido en los dados y los servicios que posee el propietario.
+     *
+     * @return El pago calculado por alquiler.
+     */
     @Override
     public int getPaymentForRent(){
         int rent = 0;

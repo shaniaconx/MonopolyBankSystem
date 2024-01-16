@@ -9,7 +9,12 @@ public class Street extends Property {
     private final ArrayList<Integer> costStayingWithHouses;
     private final Terminal terminal;
 
-
+    /**
+     * Constructor para la clase Street.
+     *
+     * @param code      Código que representa la información de la calle.
+     * @param terminal  Terminal para interactuar con el usuario.
+     */
     Street(String code, Terminal terminal){
         super(parseId(code), parseClass(code), parseDescription(code), terminal, parseMortgageValue(code)*2, false, parseMortgageValue(code));
 
@@ -23,16 +28,35 @@ public class Street extends Property {
         }
     }
 
+    /**
+    * Extrae y devuelve el coste a pagar por caer en una calle a partir de especificarle una parte de una cadena de texto.
+    * 
+    * @param code La cadena de texto que contiene los datos.
+    * @return El precio a pagar por caer en la propiedad como un entero.
+    * @throws NumberFormatException si la parte coste por caer en la cadena no es un número entero válido.
+    */
     private int parseCostStayingWithHouses(int part, String code){
         String [] parts = code.split(";");
         return Integer.parseInt(parts[part]);
     }
 
+    /**
+    * Extrae y devuelve el coste de comprar una casa u hotel a partir de una cadena de texto.
+    * 
+    * @param code La cadena de texto que contiene los datos.
+    * @return El precio de las casas y hoteles de la propiedad como un entero.
+    * @throws NumberFormatException si la parte del precio en la cadena no es un número entero válido.
+    */
     private int parseHousePrice(String code){
         String[] parts = code.split(";");
         return Integer.parseInt(parts[9]);
     }
 
+    /**
+     * Calcula el pago por alquiler basado en el número de casas y si hay hotel construido.
+     *
+     * @return El pago calculado por alquiler.
+     */
     @Override
     public int getPaymentForRent() {
         if (this.builtHotel){
@@ -42,6 +66,11 @@ public class Street extends Property {
         }
     }
 
+    /**
+    * Realiza operaciones específicas del propietario en una propiedad de tipo Street.
+    * Las operaciones incluyen hipotecar la propiedad, comprar casas/hoteles y vender casas/hoteles.
+    * La elección de la operación se realiza mediante una entrada de usuario a través del terminal.
+    */
     @Override
     public void doOwnerOperations (){
         terminal.show("owner_operations_street");
@@ -67,6 +96,14 @@ public class Street extends Property {
         }
     }
 
+    /**
+    * Vende casas o un hotel de esta propiedad. 
+    * Si la venta es obligatoria (mandatory), se ejecutará sin la opción de cancelar.
+    * La cantidad de casas a vender se determina mediante la entrada del usuario y el total 
+    * se paga al propietario. Si se vende un hotel, se elimina el hotel de la propiedad.
+    *
+    * @param mandatory Indica si la venta es obligatoria.
+    */
     public void sellHouses(boolean mandatory){
         Player owner = getOwner();
 
@@ -96,6 +133,11 @@ public class Street extends Property {
         }
     }
 
+    /**
+    * Permite al propietario comprar casas o un hotel para esta propiedad.
+    * La compra de casas está limitada a un máximo de 4, y luego se puede optar por un hotel.
+    * La decisión de comprar y la cantidad se determinan mediante la entrada del usuario.
+    */
     private void buyHouses(){
         Player owner = getOwner();
         if (!builtHotel && builtHouses == 4){
@@ -124,13 +166,28 @@ public class Street extends Property {
         }
     }
 
+    /**
+    * Verifica si el jugador tiene un hotel y si no tiene verifica si el jugador posee alguna casa.
+    *
+    * @return true si el jugador tiene un hotel o alguna casa, false en caso contrario.
+    */
     public boolean hasBuildings(){
         if (this.builtHotel) {
             return true;
         }
         return this.builtHouses > 0;
     }
+    
+    /**
+    * Verifica si el jugador tiene un hotel .
+    *
+    * @return true si el jugador tiene un hotel, false en caso contrario.
+    */
+    public boolean isBuiltHotel() {
+        return builtHotel;
+    }
 
+    //Getters y setters de atributos.
     public void setBuiltHouses(int builtHouses) {
         this.builtHouses = builtHouses;
     }
@@ -143,7 +200,4 @@ public class Street extends Property {
         return builtHouses;
     }
 
-    public boolean isBuiltHotel() {
-        return builtHotel;
-    }
 }

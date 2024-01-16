@@ -2,7 +2,7 @@ package monopolybank;
 
 /**
  *
- * @author Shania Manso GarcÃ­a
+ * @author Shania Manso García
  */
 public class MonopolyBank {
 

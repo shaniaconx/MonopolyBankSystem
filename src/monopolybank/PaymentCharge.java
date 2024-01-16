@@ -7,28 +7,49 @@ public class PaymentCharge extends MonopolyCode{
     private int amount;
     private final Terminal terminal;
 
+    /**
+     * Constructor que crea un objeto PaymentCharge.
+     * 
+     * @param code      El c?digo en formato de texto que representa el cargo o pago.
+     *                  Debe contener el ID, la descripci?n y la cantidad de dinero.
+     * @param terminal  Terminal para las interacciones de entrada/salida.
+     */
     PaymentCharge(String code, Terminal terminal){
         super(parseId(code), parseDescription(code), terminal);
 
         this.terminal = terminal;
-        Matcher moneyFinder = PATTERN.matcher(code); //finds the cuantity used in the description
+        Matcher moneyFinder = PATTERN.matcher(parseDescription(code)); // Utiliza la expresi?n regular correcta
         if (moneyFinder.find()) {
             String moneyString = moneyFinder.group();
-            this.amount = Integer.parseInt(moneyString.replace("â‚¬", "").trim());
+            this.amount = Integer.parseInt(moneyString.replace("¤", "").trim());
         }
-
     }
 
+    /**
+     * Muestra un resumen de la operaci?n de pago o cargo en el terminal.
+     * 
+     * @param p      El jugador que realiza o recibe el pago/cargo.
+     * @param amount La cantidad de dinero involucrada en la operaci?n.
+     */
     private void showSummary(Player p, int amount){
         String playersColor = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
+        System.out.println(amount);
         if(amount < 0){
             int positiveAmount = -1*amount;
             terminal.show("payment_charge_payment", this.getDescription(), playersColor, positiveAmount);
-        } else {
+        } else if (amount > 0){
             terminal.show("payment_charge_charge", this.getDescription(), playersColor, amount);
+        } else {
+            terminal.show("payment_charge_noAmount", this.getDescription());
         }
     }
 
+    /**
+     * Realiza la operaci?n de pago o cargo para el jugador especificado.
+     * 
+     * @param p El jugador sobre el cual se realizar? la operaci?n.
+     * @return Un entero que representa el resultado de la operaci?n.
+     */
     @Override
     public int doOperation(Player p){
         this.showSummary(p, this.amount);
@@ -44,12 +65,28 @@ public class PaymentCharge extends MonopolyCode{
             return 1;
         }
     }
+
+    /**
+     * Extrae y devuelve el ID de una propiedad a partir de una cadena de texto.
+     *
+     * @param code La cadena de texto que contiene el ID de la propiedad y posiblemente otros datos, separados por punto y coma.
+     * @return El ID de la propiedad como un entero.
+     * @throws NumberFormatException si la parte del ID en la cadena no es un n?mero entero v?lido.
+     */
     private static int parseId(String code){
         String [] parts = code.split(";");
         return Integer.parseInt(parts[0]);
     }
+
+    /**
+     * Extrae y devuelve la descripci?n de una propiedad, que a veces puede ser el nombre de la propiedad o la acci?n de esta, a partir de una cadena de texto.
+     *
+     * @param code La cadena de texto que contiene los datos.
+     * @return La descripcion o nombre de la propiedad como un String.
+     */
     private static String parseDescription(String code) {
         String[] parts = code.split(";");
         return parts[2];
     }
+    
 }
