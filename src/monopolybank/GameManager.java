@@ -9,7 +9,7 @@ public class GameManager {
 
     /**
      * Constructor de GameManager.
-     * Carga el Ãºltimo ID de juego guardado y lo incrementa para el nuevo juego.
+     * Carga el último ID de juego guardado y lo incrementa para el nuevo juego.
      */
     GameManager(){
         int lastGameId = loadLastGameId();
@@ -18,7 +18,7 @@ public class GameManager {
     }
 
      /**
-     * Guarda el ID del Ãºltimo juego en un archivo.
+     * Guarda el ID del último juego en un archivo.
      */
     public static void saveLastGameId() {
         try (PrintWriter out = new PrintWriter(ID_FILE)) {
@@ -29,9 +29,9 @@ public class GameManager {
     }
 
     /**
-     * Carga el Ãºltimo ID de juego desde un archivo.
+     * Carga el último ID de juego desde un archivo.
      *
-     * @return El Ãºltimo ID de juego.
+     * @return El último ID de juego.
      */
     public static int loadLastGameId() {
         int lastGameId;
@@ -107,7 +107,7 @@ public class GameManager {
      /**
      * Pregunta al usuario si desea reanudar un juego guardado.
      *
-     * @return La opciÃ³n seleccionada por el usuario.
+     * @return La opción seleccionada por el usuario.
      */
     private int askForResumeGame(){
         mainTerminal.show("game_options");

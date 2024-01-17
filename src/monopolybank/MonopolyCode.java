@@ -39,6 +39,7 @@ abstract class MonopolyCode implements Serializable {
 
     /**
      * Método abstracto que define una operación a realizar con un jugador.
+     * @param p jugador que realiza la operación.
      */
     public abstract int doOperation(Player p);
     

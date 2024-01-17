@@ -10,8 +10,7 @@ public class PaymentCharge extends MonopolyCode{
     /**
      * Constructor que crea un objeto PaymentCharge.
      * 
-     * @param code      El c?digo en formato de texto que representa el cargo o pago.
-     *                  Debe contener el ID, la descripci?n y la cantidad de dinero.
+     * @param code      El código en formato de texto que representa el cargo o pago. Debe contener el ID, la descripción y la cantidad de dinero.
      * @param terminal  Terminal para las interacciones de entrada/salida.
      */
     PaymentCharge(String code, Terminal terminal){
@@ -26,14 +25,13 @@ public class PaymentCharge extends MonopolyCode{
     }
 
     /**
-     * Muestra un resumen de la operaci?n de pago o cargo en el terminal.
+     * Muestra un resumen de la operación de pago o cargo en el terminal.
      * 
      * @param p      El jugador que realiza o recibe el pago/cargo.
-     * @param amount La cantidad de dinero involucrada en la operaci?n.
+     * @param amount La cantidad de dinero involucrada en la operación.
      */
     private void showSummary(Player p, int amount){
         String playersColor = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
-        System.out.println(amount);
         if(amount < 0){
             int positiveAmount = -1*amount;
             terminal.show("payment_charge_payment", this.getDescription(), playersColor, positiveAmount);
@@ -45,10 +43,10 @@ public class PaymentCharge extends MonopolyCode{
     }
 
     /**
-     * Realiza la operaci?n de pago o cargo para el jugador especificado.
+     * Realiza la operación de pago o cargo para el jugador especificado.
      * 
-     * @param p El jugador sobre el cual se realizar? la operaci?n.
-     * @return Un entero que representa el resultado de la operaci?n.
+     * @param p El jugador sobre el cual se realizará la operación.
+     * @return Un entero que representa el resultado de la operación.
      */
     @Override
     public int doOperation(Player p){
@@ -71,7 +69,7 @@ public class PaymentCharge extends MonopolyCode{
      *
      * @param code La cadena de texto que contiene el ID de la propiedad y posiblemente otros datos, separados por punto y coma.
      * @return El ID de la propiedad como un entero.
-     * @throws NumberFormatException si la parte del ID en la cadena no es un n?mero entero v?lido.
+     * @throws NumberFormatException si la parte del ID en la cadena no es un número entero válido.
      */
     private static int parseId(String code){
         String [] parts = code.split(";");
@@ -79,7 +77,7 @@ public class PaymentCharge extends MonopolyCode{
     }
 
     /**
-     * Extrae y devuelve la descripci?n de una propiedad, que a veces puede ser el nombre de la propiedad o la acci?n de esta, a partir de una cadena de texto.
+     * Extrae y devuelve la descripción de una propiedad, que a veces puede ser el nombre de la propiedad o la acción de esta, a partir de una cadena de texto.
      *
      * @param code La cadena de texto que contiene los datos.
      * @return La descripcion o nombre de la propiedad como un String.

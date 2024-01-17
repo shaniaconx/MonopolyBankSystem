@@ -15,10 +15,10 @@ public class RepairsCard extends MonopolyCode{
      * Constructor de la tarjeta de reparaciones.
      * 
      * Este constructor inicializa una tarjeta de reparaciones, extrayendo los costos asociados con las casas y hoteles
-     * a partir de la descripci贸n proporcionada en el c贸digo.
+     * a partir de la descripci髇 proporcionada en el c骴igo.
      *
-     * @param code El c贸digo de la tarjeta, que contiene los detalles necesarios.
-     * @param terminal La terminal a trav茅s de la cual se comunica con el usuario.
+     * @param code El c骴igo de la tarjeta, que contiene los detalles necesarios.
+     * @param terminal La terminal a trav閟 de la cual se comunica con el usuario.
      */
     RepairsCard(String code, Terminal terminal){
         super(parseId(code), parseDescription(code), terminal);
@@ -47,18 +47,18 @@ public class RepairsCard extends MonopolyCode{
     }
 
     /**
-    * Realiza la operaci贸n de cobro por casas y hoteles en las propiedades de un jugador.
+    * Realiza la operaci髇 de cobro por casas y hoteles en las propiedades de un jugador.
     *
-    * Este m茅todo calcula el total a pagar por el jugador en funci贸n de la cantidad de casas y hoteles
+    * Este m閠odo calcula el total a pagar por el jugador en funci髇 de la cantidad de casas y hoteles
     * que posee en sus propiedades. Para cada propiedad del tipo Street, se verifica si tiene un hotel
     * o casas construidas, y se suman las cantidades respectivas. Luego se calcula el total a pagar
-    * por las casas y hoteles, se muestra un resumen y se procede con la operaci贸n de pago.
+    * por las casas y hoteles, se muestra un resumen y se procede con la operaci髇 de pago.
     *
     * Si el jugador acepta el pago, se realiza el cobro. Si el jugador no puede realizar el pago por no tener dinero,
     * se traspasan sus propiedades al banco.
     *
-    * @param p El jugador sobre el cual se realiza la operaci贸n.
-    * @return Un entero que representa el resultado de la operaci贸n, es decir, si se ha realizado exitosamente o
+    * @param p El jugador sobre el cual se realiza la operaci髇.
+    * @return Un entero que representa el resultado de la operaci髇, es decir, si se ha realizado exitosamente o
     * si no se ha podido realizar.
     */
     @Override
@@ -93,9 +93,9 @@ public class RepairsCard extends MonopolyCode{
     * Muestra un resumen de los pagos por reparaciones.
     * 
     * @param p El jugador que realiza el pago.
-    * @param playerHouses N煤mero de casas que posee el jugador.
+    * @param playerHouses N鷐ero de casas que posee el jugador.
     * @param totalForHouses Coste total de reparaciones para las casas.
-    * @param playerHotels N煤mero de hoteles que posee el jugador.
+    * @param playerHotels N鷐ero de hoteles que posee el jugador.
     * @param totalForHotels Coste total de reparaciones para los hoteles.
     * @param totalPayment Pago total que el jugador debe realizar.
     */
@@ -109,7 +109,7 @@ public class RepairsCard extends MonopolyCode{
      *
      * @param code La cadena de texto que contiene el ID de la propiedad y posiblemente otros datos, separados por punto y coma.
      * @return El ID de la propiedad como un entero.
-     * @throws NumberFormatException si la parte del ID en la cadena no es un n煤mero entero v谩lido.
+     * @throws NumberFormatException si la parte del ID en la cadena no es un n鷐ero entero v醠ido.
      */
     private static int parseId(String code){
         String [] parts = code.split(";");
@@ -117,7 +117,7 @@ public class RepairsCard extends MonopolyCode{
     }
 
     /**
-     * Extrae y devuelve la descripci贸n de una propiedad, que a veces puede ser el nombre de la propiedad o la acci贸n de esta, a partir de una cadena de texto.
+     * Extrae y devuelve la descripci髇 de una propiedad, que a veces puede ser el nombre de la propiedad o la acci髇 de esta, a partir de una cadena de texto.
      *
      * @param code La cadena de texto que contiene los datos.
      * @return La descripcion o nombre de la propiedad como un String.
