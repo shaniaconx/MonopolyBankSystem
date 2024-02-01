@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0319432a-da55-420f-85dc-b14bbb4fcd8d" name="Changes" comment="si">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/monopolybank/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/monopolybank/Property.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Property.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/monopolybank/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Service.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/monopolybank/Transport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/monopolybank/Transport.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,6 +85,8 @@
       <workItem from="1703672249562" duration="2615000" />
       <workItem from="1703692874455" duration="8349000" />
       <workItem from="1703772172245" duration="8955000" />
+      <workItem from="1703969519069" duration="35000" />
+      <workItem from="1703969582992" duration="53000" />
     </task>
     <task id="LOCAL-00001" summary="si">
       <option name="closed" value="true" />
