@@ -5,6 +5,12 @@ import java.util.ArrayList;
 public class Transport extends Property{
     private final ArrayList<Integer> costStaying;
 
+    /**
+     * Constructor para la clase Transport..
+     *
+     * @param code Código que contiene la información necesaria para inicializar la propiedad.
+     * @param terminal Terminal que se utiliza para la interacción con el usuario.
+     */
     Transport(String code, Terminal terminal){
         super(parseId(code), parseClass(code), parseDescription(code), terminal, parseMortgageValue(code)*2, false, parseMortgageValue(code));
 
@@ -14,69 +20,23 @@ public class Transport extends Property{
         }
     }
 
-    private void showPaymentSummary(int amount, Player p){
-        terminal.show("El jugador " + p.getColor() + " usarÃ¡ la propiedad " + this.description + ". Por ello, pagarÃ¡ " + amount + "â‚¬ al jugador " + this.getOwner().getColor() +"\n 1.Aceptar\n 2.Cancelar");
-
-        int choice = terminal.read();
-        do {
-            switch (choice) {
-                case 1:
-                    p.payOtherPlayer(this.getOwner(), amount);
-                    break;
-                case 2:
-                    //cancel
-                    break;
-                default:
-                    terminal.show("Por favor, seleccione una de las opciones propuestas.");
-            }
-        }while (choice != 1 || choice != 2);
-    }
-
-    private void showPurchaseSummary(int amount, Player p){
-        terminal.show("Se va a realizar la compra de la propiedad " + this.description + " por parte del jugador " + p.getColor() + " por un importe de " + amount + "â‚¬.\n 1.Aceptar\n 2.Cancelar");
-        int choice = terminal.read();
-        do {
-            switch (choice) {
-                case 1:
-                    p.pay(amount, false);
-                    break;
-                case 2:
-                    //cancel
-                    break;
-                default:
-                    terminal.show("Por favor, seleccione una de las opciones propuestas.");
-            }
-        }while (choice != 1 || choice != 2);
-    }
-
+    /**
+     * Calcula el pago por renta de la propiedad de transporte.
+     * El pago depende del número de propiedades de transporte que posea el propietario.
+     *
+     * @return El costo de la estancia en función del número de propiedades de transporte que posee el propietario.
+     */
     @Override
     public int getPaymentForRent(){
         int rent = 0;
         Player actualOwner = this.getOwner();
         for (Property p: actualOwner.getProperties()) {
-            String actualClass = p.getPropertyClass();
-            if (this.getPropertyClass().equals(actualClass)){
+            if (p instanceof Transport){
                 rent++;
             }
         }
-        return costStaying.get(rent);
+        return costStaying.get(rent-1);
     }
 
-    @Override
-    public void doOperation(Player p) {
-        Player actualOwner = this.getOwner();
-        if (actualOwner == null){
-            p.pay(this.getPrice(), false);
-        } else if (actualOwner.equals(p)) {
-            this.doOwnerOperations();
-        } else { //!actualOwner.equals(p)
-            int rentToPay = this.getPaymentForRent();
-            p.pay(rentToPay, true);
-        }
-    }
 
-    @Override
-    public void acceptCancel(int choice){
-
-    }
 }

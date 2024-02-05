@@ -1,45 +1,37 @@
 package monopolybank;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import static monopolybank.Constants.*;
 
 public class Translator {
-    private String language;
-    private Map<String, String> dictionary;
+    private ResourceBundle resourceBundle;
 
-    Translator(String dictionaryFileName){
-        dictionary = new HashMap<>();
-        setLanguage(dictionaryFileName.replaceFirst("[.]", ""));
-        loadDictionary(dictionaryFileName);
-
+    /**
+     * Constructor de Translator.
+     * Inicializa el recurso de internacionalización para un idioma específico.
+     * 
+     * @param locale El objeto Locale que especifica el idioma y la región para la traducción.
+     */
+    Translator(Locale locale){
+        resourceBundle = ResourceBundle.getBundle(LANGUAGES_PATH, locale);
     }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getLanguage(){
-        return this.language;
-    }
-
-    private void loadDictionary(String dictionaryRoute){
-        try (BufferedReader br = new BufferedReader(new FileReader(dictionaryRoute))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] parts = linea.split(",");
-                if (parts.length == 2) {
-                    dictionary.put(parts[0], parts[1]);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    
+    /**
+     * Traduce un mensaje usando una clave dada.
+     * Si se proporcionan argumentos adicionales, estos se utilizan para formatear el mensaje.
+     * 
+     * @param key La clave que se utiliza para buscar el mensaje en el recurso de internacionalización.
+     * @param args Argumentos opcionales que se utilizan para formatear el mensaje traducido.
+     * @return El mensaje traducido y formateado. Si no se encuentra la traducción, devuelve la clave.
+     */
+    public String translate(String key, Object... args) {
+        try {
+            String message = resourceBundle.getString(key);
+            return String.format(message, args);
+        } catch (MissingResourceException e) {
+            // if translation not found return key
+            return key;
         }
-    }
-
-    public String translate(String original){
-        return dictionary.get(original);
     }
 }

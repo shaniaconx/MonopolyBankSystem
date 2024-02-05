@@ -1,27 +1,36 @@
 package monopolybank;
 
+import static monopolybank.Constants.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.*;
 
-import static monopolybank.Constants.*;
-
 public class Game implements Serializable {
-    //List <MonopolyCode> codes = null;
-    private Map<Integer, MonopolyCode> codes = null;
-    private Map<Integer, Player> players = null;
-    private Terminal terminal;
+    private static int gameId;
+    private Map<Integer, MonopolyCode> codes;
+    private Map<Integer, Player> players;
+    private final Terminal terminal;
 
+    /**
+     * Constructor de Game. Inicializa el juego con un terminal especí­fico y carga los códigos y jugadores.
+     *
+     * @param terminal Terminal utilizado para la interacción con el usuario.
+     */
     Game (Terminal terminal){
         this.terminal = terminal;
-        this.createPlayers();
-        this.loadMonopolyCodes(CONFIG_CODE);
+        gameId = GameManager.getActualGameId();
+        players = createPlayers();
     }
 
-    private void loadMonopolyCodes (String fileName){
+    /**
+     * Carga los códigos de Monopoly desde un archivo de configuración.
+     */
+    private void loadMonopolyCodes (){
         try {
-            this.codes = new HashMap<Integer, MonopolyCode>();
-            Scanner myReader = new Scanner(fileName);
+            this.codes = new HashMap<>();
+            File file = new File(CONFIG_CODE);
+            Scanner myReader = new Scanner(file);
 
             while (myReader.hasNextLine()) {
                 String actualLine = myReader.nextLine();
@@ -46,7 +55,7 @@ public class Game implements Serializable {
                         newCode = new RepairsCard(actualLine, terminal);
                         break;
                     default:
-                        System.out.println("ERROR, tipo de cÃ³digo no encontrado.");
+                        terminal.show("code_not_found");
                 }
 
                 int key = newCode.getId();
@@ -54,52 +63,132 @@ public class Game implements Serializable {
             }
             myReader.close();
         } catch (FileNotFoundException e){
-            System.out.println("An error occurred. Couldn't read file.");
+            terminal.show("load_files_error");
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Extrae el tipo de código Monopoly de una lí­nea de texto.
+     *
+     * @param line Lí­nea del archivo de configuración.
+     * @return Tipo de clase del código de Monopoly.
+     */
     private String getCodeClass(String line){
         String[] parts = line.split(";");
         return parts[1];
     }
 
+    /**
+     * Comienza el juego y gestiona su flujo principal.
+     */
     public void play(){
-        while (players.size() > 1) {
-            terminal.show("Introduzca cÃ³digo de tarjeta:");
-            int cardCode = terminal.read();
-            terminal.show("Introduzca cÃ³digo de jugador:\n(rojo = 1, verde = 2, azul = 3, negro = 4)");
-            int playerCode = terminal.read();
-            Player actualPlayer = players.get(playerCode);
-            MonopolyCode actualCard = codes.get(cardCode);
-            actualCard.doOperation(actualPlayer);
+        loadMonopolyCodes();
+        boolean exitGame = false;
+        
+        //game loop
+        while (players.size() > 1 && !exitGame) {
+                terminal.show("card_code");
+                int cardCode = terminal.read();
+
+                int playerCode;
+                do {
+                    terminal.show("player_code_title");
+                    for (Integer id : players.keySet()) {
+                        Player p = players.get(id);
+                        String color = terminal.getTranslatorManager().getTranslator().translate(p.getColor().toString());
+                        terminal.show("player_code", color, id);
+                    }
+                    playerCode = terminal.read();
+                }while (!players.containsKey(playerCode));
+
+                Player actualPlayer = players.get(playerCode);
+                MonopolyCode actualCard = codes.get(cardCode);
+
+                int result = actualCard.doOperation(actualPlayer);
+                if (result == 0){
+                    removePlayer(playerCode);
+                }
+
+                if(gameStatusAndSave()){
+                    exitGame = true;
+                }
         }
-        Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
-        Player winner = winnerEntry.getValue();
-        String winnerColor = winner.getColor().toString();
-        terminal.show("Â¡El ganador es el jugador " + winnerColor + "!");
-        //todo end game
+        
+        //end game
+        if (players.size() == 1){
+            Map.Entry<Integer, Player> winnerEntry = players.entrySet().iterator().next();
+            Player winner = winnerEntry.getValue();
+            String winnerColor = terminal.getTranslatorManager().getTranslator().translate(winner.getColor().toString());
+            terminal.show("winner", winnerColor);
+        }
     }
 
-    private void createPlayers(){
+    /**
+     * Crea y retorna un mapa de jugadores basado en la entrada del usuario.
+     *
+     * @return Mapa de jugadores.
+     */
+    private Map<Integer, Player> createPlayers(){
         int numPlayers;
+        Map<Integer, Player> map = new HashMap<>();
         do {
-            terminal.show("Indica el nÃºmero de jugadores que participarÃ¡n en la partida:");
+            terminal.show("number_of_players");
             numPlayers = terminal.read();
             if (numPlayers == 1 || numPlayers > 4){
-                terminal.show("Elige un nÃºmero de jugadores entre 2 y 4.");
+                terminal.show("number_of_players_error");
             }
         } while (numPlayers == 1 || numPlayers > 4);
 
         for (int i = 0; i < numPlayers; i++){
             int playerId;
             do{
-                terminal.show("Â¿QuÃ© color quieres?\n1. Rojo\n2. Verde\n3. Azul\n4. Negro");
+                terminal.show("select_color");
                 playerId = terminal.read();
-                if (players.containsKey(playerId)){
-                    terminal.show("Elija un color libre.");
+                if (map != null && map.containsKey(playerId)){
+                    terminal.show("color_chosen");
                 }
-            }while (players.containsKey(playerId));
-            players.put(playerId, new Player(playerId, this.terminal));
+            }while (map != null && map.containsKey(playerId));
+            map.put(playerId, new Player(playerId, this.terminal));
         }
+        return map;
+    }
+
+    /**
+     * Elimina un jugador del juego basado en su ID.
+     *
+     * @param playerId ID del jugador a eliminar.
+     */
+    private void removePlayer(int playerId){
+        Player eliminated = players.get(playerId);
+        String colorEliminated = terminal.getTranslatorManager().getTranslator().translate(eliminated.getColor().toString());
+        terminal.show("player_elimination", colorEliminated);
+        this.players.remove(playerId);
+    }
+
+    /**
+     * Muestra el estado del juego y ofrece opciones para guardar.
+     */
+    private boolean gameStatusAndSave(){
+        terminal.show("menu_status_save");
+        int option = terminal.read();
+        
+        switch(option){
+            case 1:
+                for (Map.Entry<Integer, Player> entry : players.entrySet()) {
+                    Player player = entry.getValue();
+                    player.stringPlayerInfo();
+                }
+                GameManager.saveGame(this, gameId);
+                return false;
+            case 2:
+                terminal.show("bye_message");
+                GameManager.saveGame(this, gameId);
+                return true;
+            default:
+                GameManager.saveGame(this, gameId);
+                return false;
+        }
+        
     }
 }

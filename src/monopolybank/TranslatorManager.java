@@ -1,23 +1,34 @@
 package monopolybank;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.util.Locale;
 
 public class TranslatorManager {
-    private Translator currentIdiom;
+    private Translator currentLanguage;
 
-    public Translator getCurrentIdiom() {
-        return currentIdiom;
-    }
-    public void setCurrentIdiom(Translator currentIdiom) {
-        this.currentIdiom = currentIdiom;
+    /**
+     * Constructor de TranslatorManager.
+     * Inicializa el traductor con el idioma español como predeterminado.
+     */
+    public TranslatorManager() { 
+        this.currentLanguage = new Translator(new Locale("es"));
     }
 
-    public void changeIdiom(String newDictionary) {
-        //newDictionary = English, Euskera, Catalan
-        if (!newDictionary.equalsIgnoreCase(getCurrentIdiom().getLanguage())){
-            Translator newTranslator = new Translator(newDictionary);
-            setCurrentIdiom(newTranslator);
-        }
+    /**
+     * Cambia el idioma del traductor actual.
+     * Crea un nuevo objeto Translator con el idioma especificado.
+     *
+     * @param language Código del idioma para el nuevo traductor (por ejemplo, "en" para inglés, "es" para español).
+     */
+    public void changeLanguage(String language) {
+        Locale newLocale = new Locale(language);
+        this.currentLanguage = new Translator(newLocale);
+    }
+
+     /**
+     * Obtiene el traductor actual.
+     * 
+     * @return El objeto Translator actualmente en uso.
+     */
+    public Translator getTranslator() {
+        return currentLanguage;
     }
 }

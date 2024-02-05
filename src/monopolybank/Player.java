@@ -3,15 +3,37 @@ package monopolybank;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Enumeración que representa los colores disponibles.
+ */
 enum Color {
     red(1), green(2), blue(3), black(4);
     private final int value;
+    
+    /**
+     * Constructor para el enum Color.
+     *
+     * @param value El valor numérico asociado con el color.
+     */
     Color(int value){
         this.value = value;
     }
+    
+    /**
+     * Obtiene el valor asociado con el color.
+     *
+     * @return El valor numérico del color.
+     */
     public int getValue(){
         return value;
     }
+    
+    /**
+     * Asocia un valor numérico con un color.
+     *
+     * @param value El valor numérico para buscar el color correspondiente.
+     * @return El Color asociado con el valor numérico dado.
+     */
     public static Color association(int value){
         for (Color c: values()){
             if (c.getValue() == value){
@@ -23,86 +45,132 @@ enum Color {
 
     @Override
     public String toString() {
-        switch (this) {
-            case red: return "Rojo";
-            case green: return "Verde";
-            case blue: return "Azul";
-            default: return "Negro";
-        }
+        return switch (this) {
+            case red -> "red";
+            case green -> "green";
+            case blue -> "blue";
+            default -> "black";
+        };
 
     }
 }
 
+/**
+ * Clase que representa a un jugador en el juego.
+ */
 public class Player implements Serializable {
     private final int id;
     private final Color color;
-    private int balance = 1500;
-    private ArrayList<Property> properties = null;
-    private boolean bankrupt = false;
-    private Terminal terminal;
+    private int balance;
+    private ArrayList<Property> properties;
+    private boolean bankrupt;
+    private final Terminal terminal;
 
+    /**
+     * Constructor para la clase Player.
+    *
+    * @param id El identificador único del jugador.
+    * @param terminal La terminal utilizada para interactuar con el jugador.
+    */
     Player (int id, Terminal terminal){
         this.id = id;
         color = Color.association(id);
         this.balance = 1500;
-        this.properties = null;
+        this.properties = new ArrayList<>();
         this.bankrupt = false;
         this.terminal = terminal;
     }
 
+    //Getters y setters.
     public Color getColor() {
         return color;
     }
-
-    @Override
-    public String toString() { //todo translator??
-        return "Jugador " + color.toString() + ": " + "Dinero =" + balance;
-    }
-
     public int getBalance() {
         return balance;
     }
-
-    public void getPaid (int balance) {
-        this.balance += balance;
+    public void setBankrupt(boolean state){
+        this.bankrupt = state;
+    }
+    public ArrayList<Property> getProperties() {
+        return properties;
+    }
+    
+    /**
+    * Muestra la información del jugador en la terminal.
+    */
+    public void stringPlayerInfo() {
+        String colorTranslated = terminal.getTranslatorManager().getTranslator().translate(getColor().toString());
+        terminal.show("player_info", colorTranslated, getBalance());
+        this.showProperties();
     }
 
-    public boolean pay (int amount, boolean mandatory){
+    /**
+    * Aumenta el balance del jugador con el monto especificado.
+    *
+    * @param balance El monto a añadir al balance del jugador.
+    * @return Siempre retorna 1, pues siempre se es pagado si el jugador que paga ha podido pagar.
+    */
+       public int getPaid (int balance) {
+        this.balance += balance;
+        return 1;
+    }
+
+    /**
+    * Intenta pagar un monto especificado. Si no es posible, maneja la bancarrota.
+    *
+    * @param amount El monto a pagar.
+    * @param mandatory Indica si el pago es obligatorio.
+    * @return 1 si el pago se realizó con éxito, 0 si el jugador se declaró en bancarrota, -1 si no puede pagar.
+    */
+    public int pay (int amount, boolean mandatory){
         if (hasEnoughMoney(amount)){
             balance -= amount;
-            return true;
-        } else{
-            if (mandatory) {
-                this.setBankrupt(true);
-                while (!hasEnoughMoney(amount) && thereAreThingsToSell()){
-                    sellActives(this, true);
-                    if(hasEnoughMoney(amount)){
-                        this.setBankrupt(false);
-                        return true;
-                    }
-                }
-            } else {
-                terminal.show("No tienes dinero suficiente.");
-            }
-            return false;
+            return 1;
         }
+        if (!hasEnoughMoney(amount) && mandatory) {
+            this.setBankrupt(true);
+            while (!hasEnoughMoney(amount) && thereAreThingsToSell()){
+                sellActives(this);
+            }
+
+            if (hasEnoughMoney(amount)){
+                setBankrupt(false);
+                balance -= amount;
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        //!hasEnoughMoney(amount) && !mandatory
+        terminal.show("no_money");
+        return -1;
     }
 
+    /**
+    * Verifica si el jugador tiene suficiente dinero.
+    *
+    * @param amount El monto a verificar.
+    * @return true si el jugador tiene suficiente dinero, false en caso contrario.
+    */
     private boolean hasEnoughMoney(int amount) {
         return balance - amount > 0;
     }
 
-    public void setBankrupt(boolean state){
-        this.bankrupt = state;
-    }
-    //todo has houses es para street solo -> hacer ifs
-    /*private void sellActives(Player actual, boolean mandatory){
-        if (mandatory){
-            if (this.getProperties() != null && thereAreThingsToSell()){
-                for (Property p: properties){
-                    if(p.hasHouses()){
-                        //todo when Street class is done
-                        //todo sellHouse()
+    /**
+    * Vende activos del jugador para obtener liquidez.
+    *
+    * @param actual El jugador que está vendiendo los activos.
+    */
+    private void sellActives(Player actual){
+        if (this.getProperties() != null && thereAreThingsToSell()){
+            terminal.show("sell_actives_question");
+            int propertyId= terminal.read();
+            for (Property p: properties){
+                if (propertyId == p.getId()){
+                    if (p instanceof Street streetProperty) {
+                        if (streetProperty.hasBuildings()) {
+                            streetProperty.sellHouses(true);
+                        }
                     }
                     if(!p.getMortgaged()){
                         p.setMortgaged(true);
@@ -111,30 +179,69 @@ public class Player implements Serializable {
                 }
             }
         }
-    }*/
+    }
 
+    /**
+    * Verifica si hay cosas que el jugador puede vender.
+    *
+    * @return true si hay activos para vender, false en caso contrario.
+    */
     private boolean thereAreThingsToSell(){
         for (Property p: this.properties){
-            if (!p.getMortgaged() || p.hasHouses()) {
+            if (!p.getMortgaged()) {
+                return true;
+            }
+            if(p instanceof Street streetProperty && streetProperty.hasBuildings()){
                 return true;
             }
         }
         return false;
     }
 
-    public ArrayList<Property> getProperties() {
-        return properties;
+    
+    /**
+     * Añade una propiedad a la lista de propiedades del jugador.
+     *
+     * @param property La propiedad a añadir.
+     */
+    public void addProperty(Property property) {
+        this.properties.add(property);
     }
 
-    public void setProperty(Property p) {
-        this.properties.add(p);
-        p.setOwner(this);
+    /**
+    * Elimina una propiedad de la lista de propiedades del jugador.
+    *
+    * @param property La propiedad a eliminar.
+    */
+    public void removeProperty(Property property) {
+        properties.remove(property);
     }
 
-    //cuando pay == false y bankrupt -> traspasamos
+    /**
+    * Transfiere todas las propiedades del jugador a otro jugador.
+    *
+    * @param newOwner El nuevo propietario de las propiedades.
+    */
     public void traspaseProperties(Player newOwner){
         for (Property p: this.properties) {
             p.setOwner(newOwner);
+            newOwner.addProperty(p);
+            this.removeProperty(p);
+        }
+    }
+
+    /**
+    * Muestra las propiedades del jugador en la terminal.
+    */
+    public void showProperties() {
+        if (properties.isEmpty()) {
+            terminal.show("no_properties");
+            return;
+        }
+
+        terminal.show("player_properties");
+        for (Property property : properties) {
+            terminal.show("property", property.getDescription());
         }
     }
 
@@ -151,6 +258,7 @@ public class Player implements Serializable {
         // typecast o to Player so that we can compare
         Player c = (Player) o;
 
-        return getColor().equals(c.getColor());
+        return getColor().toString().equals(c.getColor().toString());
     }
+
 }
